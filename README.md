@@ -20,9 +20,8 @@ The final Tableau dashboard can be found [here](https://public.tableau.com/views
 The analysis and report was made in Jupyter notebooks, using python.
 
 ## Setup
-Clone this repository. 
 
-If needed, install Jupyter and python on your local machine, and set up the Jupyter kernel to run python code. 
+Due to restrictions in distribution of faculty department and job title data, this analysis is not completely reproducible. That being said, below are all the instructions I can give on how to make the project run smoothly.
 
 Create a folder called data within the repository.
 
