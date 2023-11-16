@@ -2,6 +2,8 @@
 
 An exercise in data wrangling, machine learning and data visualization.
 
+The final Tableau dashboard can be found [here](https://public.tableau.com/views/UBCSalary/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link).
+
 ## Key Tools Used
 - requests
 - DBScan
