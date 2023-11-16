@@ -35,6 +35,8 @@ using the python requests package, but it is forbiden to distribute it publicly.
 
 **For gender training data**:
 
+This data is not already in the data folder as it was too large to upload to GitHub.
+
 Go to the following link: [https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710014701](https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710014701)
 Download the data with the largest time period possible (1991-2021 chosen for this analysis).
 Drop the csv data into the "data" folder and name it "17100147.csv".
