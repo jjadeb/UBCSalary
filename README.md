@@ -49,4 +49,4 @@ Download the data.
 Drop the male-nmaes and female-names csv datasets into the "data" folder and name them "Indian-Male-Names.csv" and "Indian-Female-Names.csv" respectiveles.
 
 
-Open up the final report (`src/Final_Report.ipynb`), install the necessary packages, then run all the cells.
+Open up the final report (`UBCSalaries.ipynb`), install the necessary packages, then run all the cells.
