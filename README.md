@@ -17,7 +17,7 @@ The final Tableau dashboard can be found [here](https://public.tableau.com/views
 - Machine Learning (clustering, natural language processing)
 
 ## Technologies
-The analysis and report was made in Jupyter notebooks, using python.
+The project was made in Jupyter notebooks, using python.
 
 ## Setup
 
