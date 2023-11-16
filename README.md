@@ -23,8 +23,6 @@ The project was made in Jupyter notebooks, using python.
 
 Due to restrictions in distribution of faculty department and job title data, this analysis is not completely reproducible. That being said, below are all the instructions I can give on how to make the project run smoothly.
 
-Create a folder called data within the repository.
-
 **For UBC Salary data**:
 Go to the following link: [https://finance.ubc.ca/reporting-planning-analysis/financial-reports](https://finance.ubc.ca/reporting-planning-analysis/financial-reports). 
 Open the most recent Financial Information Act Report, and click Control + A to copy the contents of the pdf. 
