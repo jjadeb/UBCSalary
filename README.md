@@ -24,11 +24,10 @@ The project was made in Jupyter notebooks, using python.
 Due to restrictions in distribution of faculty department and job title data, this analysis is not completely reproducible. That being said, below are all the instructions I can give on how to make the project run smoothly.
 
 **For UBC Salary data**:
-This data is already in the data folder. However, you can update the analysis with more recent data by following these instructions:
+This data from 2022 is already in the data folder. However, you can update the analysis with more recent data by following these instructions:
 Go to the following link: [https://finance.ubc.ca/reporting-planning-analysis/financial-reports](https://finance.ubc.ca/reporting-planning-analysis/financial-reports). 
 Open the most recent Financial Information Act Report, and click Control + A to copy the contents of the pdf. 
 Paste the contents into a text file and then upload the file into the "data" folder. Name it "UBC Staff Salary.txt".
-The data used for this analysis is from the Financial Information Act Report of 2022.
 
 **For department/job title data**:
 This data is not provided in a tabular format by the University of British Columbia. I collected this data on this website: [https://directory.ubc.ca/index.cfm](https://directory.ubc.ca/index.cfm) 
