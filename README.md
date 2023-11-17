@@ -47,7 +47,7 @@ Drop the csv data into the "data" folder and name it "NationalNames.csv".
 
 Go to the following link: [https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710014701](https://www.kaggle.com/datasets/ananysharma/indian-names-dataset)
 Download the data.
-Drop the male-names and female-names csv datasets into the "data" folder and name them "Indian-Male-Names.csv" and "Indian-Female-Names.csv" respectiveles.
+Drop the male-names and female-names csv datasets into the "data" folder and name them "Indian-Male-Names.csv" and "Indian-Female-Names.csv" respectively.
 
 
 Open up the final report (`UBCSalaries.ipynb`), install the necessary packages, then run all the cells.
