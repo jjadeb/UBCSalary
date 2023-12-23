@@ -2,7 +2,7 @@
 
 An exercise in data wrangling, machine learning and data visualization.
 
-The final Tableau dashboard can be found [here](https://public.tableau.com/views/UBCSalary/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link).
+The final Tableau dashboard can be found [here](https://public.tableau.com/views/UBCSalariesAllYears/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link).
 
 ## Key Tools Used
 - requests
@@ -19,13 +19,13 @@ The final Tableau dashboard can be found [here](https://public.tableau.com/views
 ## Technologies
 The project was made in Jupyter notebooks, using python.
 
-## Setup
+## Data
 
-Due to restrictions in distribution of faculty department and job title data, this analysis is not completely reproducible. That being said, below are all the instructions I can give on how to make the project run smoothly.
+Due to restrictions in distribution of faculty department and job title data, this analysis is not completely reproducible. That being said, below are instructions I can give to making sure the data is availible so that this project runs smoothly.
 
 **For UBC Salary data**:
 
-Other than running the code in UBCSalaries_ALL.ipynb, no additional work is needed to collect the UBC salary data. When the code is run it scrapes all data availible on this webpage: [https://finance.ubc.ca/reporting-planning-analysis/financial-reports](https://finance.ubc.ca/reporting-planning-analysis/financial-reports). This scraped data can be found in the data folder of this repository.
+Other than running the code in UBCSalaries_ALL.ipynb, no additional work is needed to collect the UBC salary data. When the code is run it scrapes all salary data availible on this webpage: [https://finance.ubc.ca/reporting-planning-analysis/financial-reports](https://finance.ubc.ca/reporting-planning-analysis/financial-reports). This scraped data can be found in the data folder of this repository.
 
 **For department/job title data**:
 
@@ -34,7 +34,7 @@ using the python requests package, but it is forbiden to distribute it publicly.
 
 **For gender training data**:
 
-This data is not already in the data folder as it was too large to upload to GitHub.
+This data should already in the data folder but if it isn't it can be added by following these steps:
 
 Go to the following link: [https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710014701](https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710014701)
 Download the data with the largest time period possible (1991-2021 chosen for this analysis).
