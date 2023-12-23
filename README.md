@@ -25,7 +25,7 @@ Due to restrictions in distribution of faculty department and job title data, th
 
 **For UBC Salary data**:
 
-Other than running the code in this repository, no additional work is needed to collect the UBC salary data. When the code is run it scrapes all data availible on this webpage: [https://finance.ubc.ca/reporting-planning-analysis/financial-reports](https://finance.ubc.ca/reporting-planning-analysis/financial-reports). This scraped data can be found in the data folder of this repository.
+Other than running the code in UBCSalaries_ALL.ipynb, no additional work is needed to collect the UBC salary data. When the code is run it scrapes all data availible on this webpage: [https://finance.ubc.ca/reporting-planning-analysis/financial-reports](https://finance.ubc.ca/reporting-planning-analysis/financial-reports). This scraped data can be found in the data folder of this repository.
 
 **For department/job title data**:
 
