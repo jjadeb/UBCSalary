@@ -4,6 +4,8 @@ An exercise in data wrangling, machine learning and data visualization.
 
 The final Tableau dashboard can be found [here](https://public.tableau.com/views/UBCSalariesAllYears/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link).
 
+Please feel free to add suggestions or point out bugs in the issues tab!
+
 ## Key Tools Used
 - requests
 - DBScan
