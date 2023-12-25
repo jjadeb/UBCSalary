@@ -23,7 +23,7 @@ The project was made in Jupyter notebooks, using python.
 
 ## Data
 
-Due to restrictions in distribution of faculty department and job title data, this analysis is not completely reproducible. That being said, below are instructions I can give to making sure the data is availible so that this project runs smoothly.
+Due to restrictions in distribution of faculty department and job title data, this analysis is not completely reproducible. That being said, below are details about the different data sources used in this project.
 
 **For UBC Salary data**:
 
