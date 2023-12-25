@@ -32,7 +32,7 @@ Other than running the code in UBCSalaries_ALL.ipynb, no additional work is need
 **For department/job title data**:
 
 I collected this data on this website: [https://directory.ubc.ca/index.cfm](https://directory.ubc.ca/index.cfm) 
-using the python requests package, but it is forbiden for me to distribute it publicly. Therefore, I will not be providing access to this data. However, position data is publicly available through the Vancouver Sun here: https://github.com/vs-postmedia/public-sector-salary-data. I chose not to use this dataset in order to learn more about scraping and data cleaning.
+using the python requests package, but it is forbiden for me to distribute it publicly. Therefore, I will not be providing access to this data. However, position data is publicly available through the Vancouver Sun [here](https://github.com/vs-postmedia/public-sector-salary-data). I chose not to use this dataset in order to learn more about scraping and data cleaning.
 
 
 **For gender training data**:
