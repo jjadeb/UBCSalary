@@ -1,4 +1,4 @@
-FROM quay.io/jupyter/minimal-notebook:x86_64-ubuntu-22.04
+FROM quay.io/jupyter/minimal-notebook:aarch64-ubuntu-22.04
 
 
 # Install the Python packages 
