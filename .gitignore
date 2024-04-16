@@ -1,2 +1,10 @@
 .DS_Store
 .ipynb_checkpoints
+.cache
+.config
+.ipython
+.jupyter
+.local
+.npm
+.bash_history
+.conda
