@@ -3,6 +3,8 @@ name: Docker Image CI
 on:
   push:
     branches: [ "main" ]
+    paths: 
+      - 'Dockerfile'
 
 jobs:
   build-and-push:
