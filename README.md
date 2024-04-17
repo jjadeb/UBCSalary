@@ -12,6 +12,8 @@ The final Tableau dashboard can be found [here](https://public.tableau.com/views
 
 ## Reprodicible Environment
 
+**IMPORTANT NOTE:** This analysis is not yet completely reproducible (see [Data](#data) for more details). However, I am working on an update to make it reproducible so hang in there!
+
 There are two options for running my analysis in a reproducible environment. You can use the `environment.yml` file or use Docker. The `environment.yml` file is a lighter-weight option compared to Docker. 
 
 ### environment.yml
@@ -64,6 +66,8 @@ docker-compose up
 After launching the Docker Container, in the terminal look for a URL that starts with http://127.0.0.1:8888/lab?token= . Copy and paste that URL into your browser.
 
 You should now see the Jupyter lab IDE in your browser, with all the project files visible in the file browser pane on the left side of the screen.
+
+To run the analysis, open `reports/UBC_salary_analysis.ipynb` in Jupyter Lab and under the "Kernel" menu click "Restart Kernel and Run All Cells...".
 
 Stop the Docker container by first typing `Cntrl + C`in the terminal where you launched the container, and then run the following command:
 
