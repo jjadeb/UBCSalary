@@ -1,10 +1,14 @@
 # Visualizing UBC Salaries: Split by Gender, Department, and Job Title
 
-An exercise in data wrangling, machine learning and data visualization.
+The aim of this project is to create a Tableau dashboard for visualizing University of British Columbia (UBC) faculty salaries based on guessed gender, department, and job title. A secondary goal is to make sure my analysis is reproducible and auditable.
+
+To prioritize learning, rather than directly requesting salary data from UBC by department, job title, and gender, I will rely on the annual PDF of salary data released by UBC, along with information from UBC's faculty directory and global baby name datasets.
+
+The project involves several steps: gathering and cleaning salary data, collecting and cleaning department and job title data, making gender predictions for each faculty member, and ultimately visualizing the cleaned data through a Tableau dashboard.
+
+This approach incorporates tasks such as scraping, clustering, and data transformation, offering an in-depth exploration of data manipulation techniques and fostering a comprehensive understanding of the intricacies involved in data wrangling.
 
 The final Tableau dashboard can be found [here](https://public.tableau.com/views/UBCSalariesAllYears/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link).
-
-Please feel free to add suggestions or point out bugs in the issues tab!
 
 ## Reprodicible Environment
 
@@ -67,20 +71,12 @@ Stop the Docker container by first typing `Cntrl + C`in the terminal where you l
 docker-compose rm
 ```
 
-## Key Tools Used
-- requests
-- DBScan
-- nltk
-- Tableau
-
 ## Key Skills Learned
 - Data Collecting
 - Data Wrangling
 - Data Visualization
 - Machine Learning (clustering, natural language processing)
 
-## Technologies
-The project was made in Jupyter notebooks, using python.
 
 ## Data
 
@@ -114,3 +110,12 @@ Drop the male-names and female-names csv datasets into the "data" folder and nam
 
 
 Open up the final report (`UBCSalaries_ALL.ipynb`), install the necessary packages, then run all the cells.
+
+## License
+
+The UBC Salary Analysis report contained herein is licensed under the
+[Creative Commons Attribution 4.0 International (CC BY 4.0) License](https://creativecommons.org/licenses/by/4.0/legalcode).
+See [the license file](LICENSE.md) for more information. If
+re-using/re-mixing please provide attribution and link to this webpage.
+The software code contained within this repository is licensed under the
+MIT license. See [the license file](LICENSE.md) for more information.
