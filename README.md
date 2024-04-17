@@ -6,7 +6,36 @@ The final Tableau dashboard can be found [here](https://public.tableau.com/views
 
 Please feel free to add suggestions or point out bugs in the issues tab!
 
-## Docker
+## Reprodicible Environment
+
+There are two options for running my analysis in a reproducible environment. You can use the environment.yml file or use Docker. The environment.yml file is a lighter-weight option compared to Docker. 
+
+### environment.yml
+
+For the first time running the project, run the following from the **root of this repository**:
+
+```{bash}
+conda env create --file environment.yml
+```
+
+To run the analysis, run the following from the root of this repository:
+
+```{bash}
+jupyter lab
+```
+
+Open reports/UBC_salary_analysis.ipynb in Jupyter Lab and under Switch/Select Kernel choose "Python [conda env:breast_cancer_predictor]".
+
+Next, under the "Kernel" menu click "Restart Kernel and Run All Cells...".
+
+**Dependencies**
+conda (version 23.9.0 or higher)
+nb_conda_kernels (version 2.3.1 or higher)
+Python and packages listed in environment.yml
+
+Above instructions are borrowed from [this repository](https://github.com/jjadeb/UBCSalary/blob/main/README.md).
+
+### Docker
 
 Docker is a tool that can be used to run my analysis in a reproducible environment. Build a Docker container by following these steps:
 
