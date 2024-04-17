@@ -10,7 +10,7 @@ This approach incorporates tasks such as scraping, clustering, and data transfor
 
 The final Tableau dashboard can be found [here](https://public.tableau.com/views/UBCSalariesAllYears/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link).
 
-## Reprodicible Environment
+## Running the Analysis in a Reprodicible Environment
 
 **IMPORTANT NOTE:** This analysis is not yet completely reproducible (see [Data](#data) for more details). However, I am working on an update to make it reproducible so hang in there!
 
