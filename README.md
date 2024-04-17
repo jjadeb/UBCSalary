@@ -13,7 +13,7 @@ Docker is a tool that can be used to run my analysis in a reproducible environme
 **Setup**
 
 1. First, ensure you have [Docker](https://www.docker.com/products/docker-desktop/) installed and running on your machine.
-2. Clone this repository, and navigate to the root of the repository in a terminal window.
+2. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) this repository, and navigate to the root of the repository in a terminal window.
 
 Run the following commands in the terminal to build and start the container. This command activates the commands specified in [docker-compose.yml](docker-compose.yml).
 
