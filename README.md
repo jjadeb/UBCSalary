@@ -6,6 +6,31 @@ The final Tableau dashboard can be found [here](https://public.tableau.com/views
 
 Please feel free to add suggestions or point out bugs in the issues tab!
 
+## Docker
+
+Docker is a tool that can be used to run my analysis in a reproducible environment. Build a Docker container by following these steps:
+
+**Setup**
+
+1. First, ensure you have [Docker](https://www.docker.com/products/docker-desktop/) installed and running on your machine.
+2. Clone this repository, and navigate to the root of the repository in a terminal window.
+
+Run the following commands in the terminal to build and start the container. This command activates the commands specified in [docker-compose.yml](docker-compose.yml).
+
+```bash
+docker-compose pull
+docker-compose up
+```
+After launching the Docker Container, in the terminal look for a URL that starts with http://127.0.0.1:8888/lab?token= . Copy and paste that URL into your browser.
+
+You should now see the Jupyter lab IDE in your browser, with all the project files visible in the file browser pane on the left side of the screen.
+
+Stop the Docker container by first typing `Cntrl + C`in the terminal where you launched the container, and then run the following command:
+
+```
+docker-compose rm
+```
+
 ## Key Tools Used
 - requests
 - DBScan
