@@ -19,6 +19,8 @@ Run the following commands in the terminal to build and start the container. Thi
 
 ```bash
 docker-compose pull
+```
+```bash
 docker-compose up
 ```
 After launching the Docker Container, in the terminal look for a URL that starts with http://127.0.0.1:8888/lab?token= . Copy and paste that URL into your browser.
