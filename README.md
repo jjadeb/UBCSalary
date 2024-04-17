@@ -1,6 +1,6 @@
 # Visualizing UBC Salaries: Split by Gender, Department, and Job Title
 
-The aim of this project is to create a Tableau dashboard for visualizing University of British Columbia (UBC) faculty salaries based on guessed gender, department, and job title. A secondary goal is to make sure my analysis is reproducible and auditable.
+The aim of this project is to create a Tableau dashboard for visualizing University of British Columbia (UBC) faculty salaries based on guessed gender, department, and job title. A secondary goal is to make sure my data wrangling is reproducible and auditable.
 
 To prioritize learning, rather than directly requesting salary data from UBC by department, job title, and gender, I will rely on the annual PDF of salary data released by UBC, along with information from UBC's faculty directory and global baby name datasets.
 
