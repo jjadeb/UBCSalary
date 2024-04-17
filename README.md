@@ -8,32 +8,37 @@ Please feel free to add suggestions or point out bugs in the issues tab!
 
 ## Reprodicible Environment
 
-There are two options for running my analysis in a reproducible environment. You can use the environment.yml file or use Docker. The environment.yml file is a lighter-weight option compared to Docker. 
+There are two options for running my analysis in a reproducible environment. You can use the `environment.yml` file or use Docker. The `environment.yml` file is a lighter-weight option compared to Docker. 
 
 ### environment.yml
 
-For the first time running the project, run the following from the **root of this repository**:
+Ensure that [conda](https://docs.anaconda.com/free/miniconda/miniconda-install/) and [nb_conda_kernels](https://github.com/Anaconda-Platform/nb_conda_kernels) are installed on your machine.
+
+[Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) this repository, and **navigate to the root of the repository** in a terminal window. Then, run the following from the root of this repository:
 
 ```{bash}
 conda env create --file environment.yml
 ```
 
-To run the analysis, run the following from the root of this repository:
+```{bash}
+conda activate ubcsalary
+```
+
+To create a kernel for Jupyter Lab run:
+
+```{bash}
+python -Xfrozen_modules=off -m ipykernel install --user --name=ubcsalaryenv
+```
+
+Then run the following from the root of this repository:
 
 ```{bash}
 jupyter lab
 ```
 
-Open reports/UBC_salary_analysis.ipynb in Jupyter Lab and under Switch/Select Kernel choose "Python [conda env:breast_cancer_predictor]".
+Open `reports/UBC_salary_analysis.ipynb` in Jupyter Lab and navigate to `Kernel` >>> `Change Kernel...` and choose `ubcsalaryenv` from the dropdown menu.
 
-Next, under the "Kernel" menu click "Restart Kernel and Run All Cells...".
-
-**Dependencies**
-conda (version 23.9.0 or higher)
-nb_conda_kernels (version 2.3.1 or higher)
-Python and packages listed in environment.yml
-
-Above instructions are borrowed from [this repository](https://github.com/jjadeb/UBCSalary/blob/main/README.md).
+Next, to run the analysis, under the "Kernel" menu click "Restart Kernel and Run All Cells...".
 
 ### Docker
 
