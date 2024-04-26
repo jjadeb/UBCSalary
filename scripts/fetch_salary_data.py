@@ -17,21 +17,23 @@ import regex as re
 import io
 
 
-def find_current_financial_report_links(financial_reports_link, financial_reports_header):
-    ''' Fetches links to all available Financial Information Act Reports published by 
-    The University of British Columbia. These reports should contain staff salary data.
+def find_yearly_links(webpage, start_header, end_header):
+    ''' Fetches links on a webpage between two given h3 string headers. Finds the financial year of the link.
+    Returns a dictionary with the financial year as they key and the link as the value.
     
     Parameters:
     ----------
-    financial_reports_link : str
-        A hyperlink to the University of British Columbia's financial reports page.
-    financial_reports_header : str
-        The header on the webpage, under which are the Financial Information Act Report links.
+    webpage : str
+        A hyperlink to a website. 
+    start_header : str
+        The header on the webpage, under which we would like to obtain links.
+    end_header : str
+        The header on the webpage, above which we would like to obtain links.
 
     Returns:
     -------
     links : dict
-        A dictionary where the key is a year and the value is a link to that year's financial report.
+        A dictionary where the key is a year and the value is a link for that year.
         (ex: {year: link})
         
     Examples:
@@ -40,26 +42,30 @@ def find_current_financial_report_links(financial_reports_link, financial_report
     >>> import requests
     >>> import from bs4 import BeautifulSoup
     >>>
-    >>> financial_reports_link = 'https://finance.ubc.ca/reporting-planning-analysis/financial-reports'
-    >>> financial_reports_header = 'Financial Information Act'
-    >>> links = find_current_financial_report_links(financial_reports_link, financial_reports_header)
+    >>> webpage = 'https://finance.ubc.ca/reporting-planning-analysis/financial-reports'
+    >>> start_header = 'Financial Information Act'
+    >>> end_header = 'Task Force on Climate-Related Disclosures Report'
+    >>> links = find_yearly_links(webpage, start_header, end_header)
     '''
     # create an empty dictionary to hold financial report links for each year availible
     links = {}
     # go to financial report webpage
-    r = requests.get(financial_reports_link, financial_reports_header) 
+    r = requests.get(webpage) 
     # use BeautifulSoup to parse through the webpage elements
     soup = BeautifulSoup(r.content, 'html.parser')
-    # find the "Financial Information Act" header
-    finance_section = soup.find('h3', string = re.compile(financial_reports_header))
-    # find the elements under the header with the financial report links links
-    salary_link_elements = finance_section.find_next_sibling('ul').findAll('li') 
-    for element in salary_link_elements: # loop through elements that contain links
-        salary_link = element.find('a').get('href') # get link from element
-        year = "20" + re.search("FY([0-9][0-9])", salary_link).group(1) # use regex to get the year in each link
-        links[year] = salary_link # add year and link to dictionary 
+    # find the the starting header
+    finance_section = soup.find('h3', string = re.compile(start_header))
+    # find the elements under the header with links
+    for sibling in finance_section.find_next_siblings(): # iterate through element siblings until end header is encoutnered
+        for link in sibling.find_all('a'): # search through 'a' elements to find links
+            if link.has_attr('href'): # see if an element is a lnk by checking for the 'href' attribute
+                salary_link = link['href'] # store the link 
+                year = "20" + re.search("FY([0-9][0-9])", salary_link).group(1) # use regex to get the year in each link
+                links[year] = salary_link # add year and link to dictionary 
+        if sibling.find(string = re.compile(end_header)): # stop loop if end header is reached
+            break
     return links
-    
+        
 
 def fetch_salary_data(pdf_link):
     '''Given a link to a pdf, return all text from the pdf.
@@ -103,7 +109,9 @@ def main(raw_salary_data_output_folder):
     '''collect and save salary data from The University of British Columbia's financial reports'''
     
     # Fetch links to all available Financial Act reports
-    links = find_current_financial_report_links('https://finance.ubc.ca/reporting-planning-analysis/financial-reports', 'Financial Information Act')
+    links = find_yearly_links('https://finance.ubc.ca/reporting-planning-analysis/financial-reports',
+                                                'Financial Information Act',
+                                                "Task Force on Climate-Related Disclosures Report")
     
     # Create an empty dictionary to store the raw salary text data
     raw_salary_dictionary = {}
