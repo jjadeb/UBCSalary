@@ -13,31 +13,111 @@ import pickle
 
 # Helper functions for cleaning data
 def take_subset_of_text(text, start_phrase, end_phrase):
-    '''return all text between two phrases'''
+    '''return all text between two phrases
+    
+    Parameters:
+    ----------
+    text : str
+        A long peice of text
+    start_phrase : str
+        We want to keep text after this start phrase
+    end_phrase : str
+        We want to keep text before this end phrase
+
+    Returns:
+    -------
+    text_subset : str
+        Text between the start phrase and end phrase
+        '''
+    
     text_subset = text.split(end_phrase)[0].split(start_phrase)[1]
     return text_subset
 
 def split_by_person(salary_text):
     '''Splits text into a list of strings with each string containing salary data for one person.
-    example string in returned list: "nAbdi, Ali  238,203   2,981" '''
+    
+    Parameters:
+    ----------
+    salary_text : str
+        Text containing salary information for staff members
+        
+    Returns:
+    -------
+    list_of_peoples_salaries : list
+        List where each element is a string containing an individual's salary information
+
+    Example:
+    --------
+    >>> salary_text = "\nAamodt, Tor  193,153   5,597  \nAbanto Salguero, \nArleni Karina  107,723   393  \nAbbassi, Arash  109,136" 
+    >>> list_of_peoples_salaries = split_by_person(salary_text)
+    >>> print(list_of_peoples_salaries)
+    >>> ["\nAamodt, Tor  193,153   5,597" ,"\nAbanto Salguero, nArleni Karina  107,723   393" ,"\nAbbassi, Arash  109,136" ]
+        '''
+    
     list_of_peoples_salaries = re.split('([\.\p{L},\s-]+[\s\n]+[0-9,-]+[\s\n]+[0-9,-]+)', salary_text)
     return list_of_peoples_salaries
 
 def remove_schedule_and_non_comma_lines(list_of_str):
     '''Remove items in a list if they dont contain a comma or they contain the word "SCHEDULE".
-    This removes incomplete list items and items such as: "SCHEDULE OF REMUNERATION AND EXPENSES" that
-    do not refer to someone's salary'''
+
+    Parameters:
+    ----------
+    list_of_str : list
+        List where each element is of type string
+        
+    Returns:
+    -------
+    list_of_str_clean : list
+        List where each element is a string. Some uninformative values of the list removed.
+    
+    Example:
+    -------
+    >>> list_of_str = ["  \n \nName  Remuneration  Expenses*", "  \n   \nAamodt, Tor  193,153   5,597",
+    '', "SCHEDULE OF REMUNERATION AND EXPENSES"]
+    >>> list_of_str_clean = remove_schedule_and_non_comma_lines(list_of_str)
+    >>> print(list_of_str_clean)
+    >>> [ "  \n   \nAamodt, Tor  193,153   5,597"]
+    '''
+
     list_of_str_clean = [i for i in list_of_str if (',' in i) and ('SCHEDULE' not in i)]
     return list_of_str_clean
     
 def remove_extra_spaces_and_new_lines(list_of_str):
-    '''remove extra spaces and new line charachters from the text. space removal takes two iterations'''
+    '''remove extra spaces and new line charachters from the each element in the list. 
+    
+    Parameters:
+    ----------
+    list_of_str : list
+        List where each element is of type string
+        
+    Returns:
+    -------
+    list_of_str_clean2 : list
+        List where each element is a string. Spaces and new-line characters now removed in each element
+
+    Example:
+    _______
+    >>> list_of_str = ["  \nAbdulai, Fatawu  89,454   8,049","  \nAbdul -Mageed, \nMuhammad  105,795   13,458"]
+    >>> list_of_str_clean2 = remove_extra_spaces_and_new_lines(list_of_str)
+    >>> print(list_of_str_clean2)
+    >>> ["Abdulai, Fatawu 89,454 8,049", "Abdul -Mageed, Muhammad 105,795 13,458"]
+    '''
+
     list_of_str_clean = [i.replace('\n',' ').replace("  "," ").strip() for i in list_of_str]
-    list_of_str_clean2 = [i.replace("  "," ") for i in list_of_str_clean]
+    list_of_str_clean2 = [i.replace("  "," ") for i in list_of_str_clean] # extra space removal takes two iterations
     return list_of_str_clean2
 
 def split_name_column_into_first_and_last(dataframe, name_column):
-    '''split a name column into first name and last name by the comma deliminator'''
+    '''split a name column into first name and last name by the comma deliminator
+
+    Parameters:
+    ----------
+        
+    Returns:
+    -------
+
+    Example:
+    _______'''
     dataframe['First Name'] = dataframe[name_column].str.split(', ', expand = True)[1]
     dataframe['Last Name'] = dataframe[name_column].str.split(', ', expand = True)[0]
     return dataframe
