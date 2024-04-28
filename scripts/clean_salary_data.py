@@ -4,7 +4,7 @@
 # This script converts a dictionary of raw salary text data into a clean dataframe.
 # The script then saves the data in csv format in the data folder
 #
-# Usage: python scripts/clean_salary_data.py data/salary_data/clean_salary_data.csv
+# Usage: python scripts/clean_salary_data.py data/salary_data/raw_salary_data.pickle data/salary_data/clean_salary_data.csv
 
 import click
 import pandas as pd
@@ -48,38 +48,42 @@ def split_by_person(salary_text):
 
     Example:
     --------
-    >>> salary_text = "\nAamodt, Tor  193,153   5,597  \nAbanto Salguero, \nArleni Karina  107,723   393  \nAbbassi, Arash  109,136" 
+    >>> salary_text = "\nAamodt, Tor  193,153   5,597  \nAbanto Salguero, \nArleni Karina  107,723   393  \nAbbassi, Arash  109,136  12" 
     >>> list_of_peoples_salaries = split_by_person(salary_text)
     >>> print(list_of_peoples_salaries)
-    >>> ["\nAamodt, Tor  193,153   5,597" ,"\nAbanto Salguero, nArleni Karina  107,723   393" ,"\nAbbassi, Arash  109,136" ]
+    >>> ["\nAamodt, Tor  193,153   5,597" ,"\nAbanto Salguero, nArleni Karina  107,723   393" ,"\nAbbassi, Arash  109,136  12" ]
         '''
     
     list_of_peoples_salaries = re.split('([\.\p{L},\s-]+[\s\n]+[0-9,-]+[\s\n]+[0-9,-]+)', salary_text)
     return list_of_peoples_salaries
 
-def remove_schedule_and_non_comma_lines(list_of_str):
-    '''Remove items in a list if they dont contain a comma or they contain the word "SCHEDULE".
+def remove_uninformative_values(list_of_str, keep_lst, dont_keep_lst):
+    '''Only keep items in a given list if they contain all keep-strings and they don't contain any dont-keep-strings
 
     Parameters:
     ----------
     list_of_str : list
         List where each element is of type string
+    keep_lst : list
+        Strings in list_of_str_clean should contain all substrings in the keep_lst
+    dont_keep_lst : list
+        Strings in list_of_str_clean should not contain any substrings in the dont_keep_lst
         
     Returns:
     -------
     list_of_str_clean : list
-        List where each element is a string. Some uninformative values of the list removed.
+        List where each element is a string. Some uninformative values in the original list removed.
     
     Example:
     -------
     >>> list_of_str = ["  \n \nName  Remuneration  Expenses*", "  \n   \nAamodt, Tor  193,153   5,597",
-    '', "SCHEDULE OF REMUNERATION AND EXPENSES"]
-    >>> list_of_str_clean = remove_schedule_and_non_comma_lines(list_of_str)
+    "", "SCHEDULE OF REMUNERATION AND EXPENSES"]
+    >>> list_of_str_clean = remove_schedule_and_non_comma_lines(list_of_str, [","], ["SCHEDULE"])
     >>> print(list_of_str_clean)
     >>> [ "  \n   \nAamodt, Tor  193,153   5,597"]
     '''
 
-    list_of_str_clean = [i for i in list_of_str if (',' in i) and ('SCHEDULE' not in i)]
+    list_of_str_clean = [i for i in list_of_str if (all(k in i for k in keep_lst) and not any(dk in i for dk in dont_keep_lst))]
     return list_of_str_clean
     
 def remove_extra_spaces_and_new_lines(list_of_str):
@@ -112,25 +116,70 @@ def split_name_column_into_first_and_last(dataframe, name_column):
 
     Parameters:
     ----------
+    dataframe : pandas.DataFrame
+        Dataframe that contains people's names
+    name_column : str
+        the name of the column that contains first and last names
         
     Returns:
     -------
+    dataframe : pandas.DataFrame
+        original dataframe with two new columns, one for first name and one for last name
+    '''
 
-    Example:
-    _______'''
-    dataframe['First Name'] = dataframe[name_column].str.split(', ', expand = True)[1]
-    dataframe['Last Name'] = dataframe[name_column].str.split(', ', expand = True)[0]
+    dataframe['First_Name'] = dataframe[name_column].str.split(', ', expand = True)[1]
+    dataframe['Last_Name'] = dataframe[name_column].str.split(', ', expand = True)[0]
     return dataframe
 
 def make_column_numeric(dataframe, column_name):
-    '''make a column have numeric values by removing commas and then applying the pandas numeric function'''
+    '''make a column have numeric values by removing commas and then applying the pandas numeric function
+    
+    Parameters:
+    ----------
+    dataframe : pandas.DataFrame
+        Dataframe that contains a column with numbers in it
+    name_column : str
+        the name of the column that contains numbers, but isn't of numeric type
+        
+    Returns:
+    -------
+    dataframe : pandas.DataFrame
+        original dataframe with column that contains numbers now of numeric type
+    '''
+
     dataframe[column_name] = dataframe[column_name].astype(str).str.replace(',','') # remove commas
     dataframe[column_name] = pd.to_numeric(dataframe[column_name], errors='coerce') # make column numeric
 
 
 
 def clean_salary_data(year, raw_data):
-    '''take salary data in string form and turn it into a dataframe, add a column and fill it with the given year'''
+    '''take salary data in string form and turn it into a dataframe, add a column and fill it with the given year
+    
+    Parameters:
+    ----------
+    year : str
+        year that the data was collected in
+    raw_data : str
+        string that contains salary data for every staff member
+        
+    Returns:
+    -------
+    dataframe : pandas.DataFrame
+        clean salary data containing last name, first name, salary (renumeration), expenses, and data collection year for each staff member
+    
+    Example:
+    _______
+    raw_data = " \n \nName  Remuneration  Expenses* \nAamodt, Tor  193,153   5,597  \nAbanto Salguero, \nArleni Karina  107,723   393  " 
+    clean_data = clean_salary_data("2023", raw_data)
+    print(clean_data)
+    
+    | Last_Name     | First_Name      | Remuneration | Expenses | Year |
+    | ------------- | --------------- | ------------ | -------- | ---- |
+    | Tor           | Aamodt          | 193153       | 5,597    | 2023 |
+    | Arleni Karina | Abanto Salguero | 107723       | 393      | 2023 |
+
+    '''
+
     # Remove beginning/end text
     salary_text = take_subset_of_text(raw_data, 'external cost recoveries.', 'Earnings greater than')
 
@@ -138,12 +187,12 @@ def clean_salary_data(year, raw_data):
     list_of_peoples_salaries = split_by_person(salary_text)
     
     # Remove unnessessary lines
-    list_of_peoples_salaries_clean = remove_schedule_and_non_comma_lines(list_of_peoples_salaries)
+    list_of_peoples_salaries_clean = remove_uninformative_values(list_of_peoples_salaries,",","SCHEDULE")
     
     # Remove spaces and new lines
     list_of_peoples_salaries_formatted = remove_extra_spaces_and_new_lines(list_of_peoples_salaries_clean)
     
-    # # Split data into Names/Remuneration/Expenses
+    # Split data into Names/Remuneration/Expenses
     list_of_split_salaries = [i.rsplit(' ',2) for i in list_of_peoples_salaries_formatted]
     
     # Create Column names
@@ -153,7 +202,7 @@ def clean_salary_data(year, raw_data):
     ubc_salary_data_first_last_name = split_name_column_into_first_and_last(ubc_salary_data, "Name")
     
     # Select necessary columns
-    ubc_salary_data_subset = ubc_salary_data_first_last_name[['Last Name','First Name','Remuneration','Expenses']]
+    ubc_salary_data_subset = ubc_salary_data_first_last_name[['Last_Name','First_Name','Remuneration','Expenses']]
     
     # turn salary column from string to numeric
     ubc_salary_data_clean = make_column_numeric(ubc_salary_data_subset, 'Remuneration')
@@ -170,17 +219,21 @@ def clean_salary_data(year, raw_data):
 @click.argument('clean_salary_data_output_folder', type=str)
 def main(raw_salary_data_file, clean_salary_data_output_folder):
     '''clean salary data for all years and then export the dataframes to csv files'''
-    salary_data = pd.DataFrame(columns = ['Last Name', 'First Name', 'Remuneration', 'Expenses','Year']) # create empty dataframe for salary data
+
+    # create empty dataframe for salary data
+    salary_data = pd.DataFrame(columns = ['Last Name', 'First Name', 'Remuneration', 'Expenses','Year']) 
 
     # read in the raw salary data dictionary
     with open(raw_salary_data_file, "rb") as raw_salary_dict:
         raw_salary_text_data = pickle.load(raw_salary_dict)
 
+    # clean and write data
     for year, raw_text_data in raw_salary_text_data.items(): # for each year that UBC has data for
         salaries = clean_salary_data(year, raw_text_data) # get clean data as a dataframe
         salaries.to_csv(f"{clean_salary_data_output_folder}/FY{year}_clean_salary_data.csv") # export individual clean dataframes
         salary_data = pd.concat([salary_data,salaries]) # paste dataframes together
     salary_data.to_csv(f"{clean_salary_data_output_folder}/all_clean_salary_data.csv") # export dataframe with all years
+
 
 if __name__ == "__main__":
     main()
