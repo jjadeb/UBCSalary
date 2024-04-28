@@ -9,7 +9,9 @@
 import click
 import pandas as pd
 import re
+import pickle
 
+# Helper functions for cleaning data
 def take_subset_of_text(text, start_phrase, end_phrase):
     '''return all text between two phrases'''
     text_subset = text.split(end_phrase)[0].split(start_phrase)[1]
@@ -23,14 +25,31 @@ def split_by_person(salary_text):
 
 def remove_schedule_and_non_comma_lines(list_of_str):
     '''Remove items in a list if they dont contain a comma or they contain the word "SCHEDULE".
-    This removes incomplete values and values such as: "SCHEDULE OF REMUNERATION AND EXPENSES" '''
+    This removes incomplete list items and items such as: "SCHEDULE OF REMUNERATION AND EXPENSES" that
+    do not refer to someone's salary'''
     list_of_str_clean = [i for i in list_of_str if (',' in i) and ('SCHEDULE' not in i)]
     return list_of_str_clean
     
-#def remove_spaces
+def remove_extra_spaces_and_new_lines(list_of_str):
+    '''remove extra spaces and new line charachters from the text. space removal takes two iterations'''
+    list_of_str_clean = [i.replace('\n',' ').replace("  "," ").strip() for i in list_of_str]
+    list_of_str_clean2 = [i.replace("  "," ") for i in list_of_str_clean]
+    return list_of_str_clean2
+
+def split_name_column_into_first_and_last(dataframe, name_column):
+    '''split a name column into first name and last name by the comma deliminator'''
+    dataframe['First Name'] = dataframe[name_column].str.split(', ', expand = True)[1]
+    dataframe['Last Name'] = dataframe[name_column].str.split(', ', expand = True)[0]
+    return dataframe
+
+def make_column_numeric(dataframe, column_name):
+    '''make a column have numeric values by removing commas and then applying the pandas numeric function'''
+    dataframe[column_name] = dataframe[column_name].astype(str).str.replace(',','') # remove commas
+    dataframe[column_name] = pd.to_numeric(dataframe[column_name], errors='coerce') # make column numeric
 
 
-def clean_salary_data(raw_data, year):
+
+def clean_salary_data(year, raw_data):
     '''take salary data in string form and turn it into a dataframe, add a column and fill it with the given year'''
     # Remove beginning/end text
     salary_text = take_subset_of_text(raw_data, 'external cost recoveries.', 'Earnings greater than')
@@ -42,50 +61,46 @@ def clean_salary_data(raw_data, year):
     list_of_peoples_salaries_clean = remove_schedule_and_non_comma_lines(list_of_peoples_salaries)
     
     # Remove spaces and new lines
-    raw_data_d = [i.replace('\n',' ').replace("  "," ").strip() for i in list_of_peoples_salaries_clean]
-    raw_data_d = [i.replace("  "," ") for i in raw_data_d]
+    list_of_peoples_salaries_formatted = remove_extra_spaces_and_new_lines(list_of_peoples_salaries_clean)
     
     # # Split data into Names/Remuneration/Expenses
-    raw_data_e = [i.rsplit(' ',2) for i in raw_data_d]
-    raw_data_e
+    list_of_split_salaries = [i.rsplit(' ',2) for i in list_of_peoples_salaries_formatted]
     
     # Create Column names
-    ubc_salary_data = pd.DataFrame(raw_data_e, columns = ['Name', 'Remuneration', 'Expenses'])
+    ubc_salary_data = pd.DataFrame(list_of_split_salaries, columns = ['Name', 'Remuneration', 'Expenses'])
     
     # Split Name into First/Last Name
-    ubc_salary_data['First Name'] = ubc_salary_data['Name'].str.split(', ', expand = True)[1]
-    ubc_salary_data['Last Name'] = ubc_salary_data['Name'].str.split(', ', expand = True)[0]
-    
+    ubc_salary_data_first_last_name = split_name_column_into_first_and_last(ubc_salary_data, "Name")
     
     # Select necessary columns
-    ubc_salary_data = ubc_salary_data[['Last Name','First Name','Remuneration','Expenses']]
+    ubc_salary_data_subset = ubc_salary_data_first_last_name[['Last Name','First Name','Remuneration','Expenses']]
     
     # turn salary column from string to numeric
-    ubc_salary_data['Remuneration'] = ubc_salary_data['Remuneration'].astype(str).str.replace(',','')
-    ubc_salary_data['Remuneration'] = pd.to_numeric(ubc_salary_data['Remuneration'], errors='coerce')
+    ubc_salary_data_clean = make_column_numeric(ubc_salary_data_subset, 'Remuneration')
 
-    ubc_salary_data['Year'] = f"{year}"
+    # add given year as column
+    ubc_salary_data_clean['Year'] = f"{year}"
 
-    return ubc_salary_data
+    return ubc_salary_data_clean
 
 
 
 @click.command()
+@click.argument('raw_salary_data_file', type=str)
 @click.argument('clean_salary_data_output_folder', type=str)
-def main(clean_salary_data_output_folder):
+def main(raw_salary_data_file, clean_salary_data_output_folder):
+    '''clean salary data for all years and then export the dataframes to csv files'''
     salary_data = pd.DataFrame(columns = ['Last Name', 'First Name', 'Remuneration', 'Expenses','Year']) # create empty dataframe for salary data
-    most_recent = True # keeps track of most recent salary data
-    for year, link in links.items(): # for each year that UBC has data for
-        raw = fetch_salary_data(link) # get raw data in string form
-        salaries = clean_salary_data(raw, year) # get clean data as a dataframe
-        if most_recent: # export the most recent salary data so that we can collect the new department/job title info
-            salaries.to_csv(f"/Users/jadebouchard/Desktop/UBC Salaries/Salary Data/{year}.csv")
-            most_recent = False
-        if salary_data.empty: # avoid warning that we shouldn't be concatenating empty dataframes
-            salary_data = salaries
-        else:
-            salary_data = pd.concat([salary_data,salaries]) # paste dataframes together
-    salary_data.to_csv(clean_salary_data_output_folder)
+
+    # read in the raw salary data dictionary
+    with open(raw_salary_data_file, "rb") as raw_salary_dict:
+        raw_salary_text_data = pickle.load(raw_salary_dict)
+
+    for year, raw_text_data in raw_salary_text_data.items(): # for each year that UBC has data for
+        salaries = clean_salary_data(year, raw_text_data) # get clean data as a dataframe
+        salaries.to_csv(f"{clean_salary_data_output_folder}/FY{year}_clean_salary_data.csv") # export individual clean dataframes
+        salary_data = pd.concat([salary_data,salaries]) # paste dataframes together
+    salary_data.to_csv(f"{clean_salary_data_output_folder}/all_clean_salary_data.csv") # export dataframe with all years
 
 if __name__ == "__main__":
     main()
