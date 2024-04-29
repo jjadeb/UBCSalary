@@ -104,8 +104,8 @@ def fetch_salary_data(pdf_link):
 
 
 @click.command()
-@click.argument('raw_salary_data_output_folder', type=str)
-def main(raw_salary_data_output_folder):
+@click.argument('raw_salary_data_file', type=str)
+def main(raw_salary_data_file):
     '''collect and save salary data from The University of British Columbia's financial reports'''
     
     # Fetch links to all available Financial Act reports
@@ -115,13 +115,20 @@ def main(raw_salary_data_output_folder):
     
     # Create an empty dictionary to store the raw salary text data
     raw_salary_dictionary = {}
+
+    # retrieve raw salary data previously collected
+    with open(raw_salary_data_file, "rb") as raw_salary_dict:
+        raw_salary_dictionary = pickle.load(raw_salary_dict)
     
+    # collect salary data
     for year, link in links.items(): # for each year that UBC has data for
-        salary_text_data = fetch_salary_data(link) # retrieve the text from the year's pdf
-        raw_salary_dictionary[year] = salary_text_data # add the text to the raw data dictionary
+        if year not in raw_salary_dictionary.keys(): # if the salary data for this year hasn't been collected yet,
+            print("collecting salary data for fiscal year " + year)
+            salary_text_data = fetch_salary_data(link) # retrieve the text from the year's pdf
+            raw_salary_dictionary[year] = salary_text_data # add the text to the raw data dictionary
 
     # Save the raw data dictionary
-    with open(raw_salary_data_output_folder, 'wb') as f:
+    with open(raw_salary_data_file, 'wb') as f:
         pickle.dump(raw_salary_dictionary, f)
             
 if __name__ == "__main__":
