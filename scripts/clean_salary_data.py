@@ -264,7 +264,24 @@ def clean_salary_data(year, raw_data):
 @click.argument('raw_salary_data_file', type=str)
 @click.argument('clean_salary_data_output_folder', type=str)
 def main(raw_salary_data_file, clean_salary_data_output_folder):
-    '''clean salary data for all years and then export the dataframes to csv files'''
+    '''clean salary data for all years and then export the dataframes to csv files
+    
+    Parameters:
+    ----------
+    raw_salary_data_file : str
+        file path that points to the raw salary dictionary.
+        this dictionary has year-strings for keys (ex:"2023") 
+        and the values are strings of salary information for that year
+    clean_salary_data_output_folder : str
+        path to the folder that the clean data should go to
+        
+    Outputs:
+    -------
+    FY{year}_clean_salary_data.csv : csv
+        sparate salary informaiton data for every available fiscal year
+    all_clean_salary_data.csv : csv
+        data containing all salary information for every available fiscal year
+    '''
 
     # create empty dataframe for salary data
     salary_data = pd.DataFrame(columns = ['Last_Name', 'First_Name', 'Remuneration', 'Expenses','Year']) 
