@@ -12,7 +12,7 @@ The final Tableau dashboard can be found [here](https://public.tableau.com/views
 
 ## Running the Analysis in a Reprodicible Environment
 
-**IMPORTANT NOTE:** This analysis is not yet completely reproducible (see [Data](#data) for more details). However, I am working on an update to make it reproducible so hang in there!
+**IMPORTANT NOTE:** This analysis is not completely reproducible (see [Data](#data) for more details).
 
 There are two options for running my analysis in a reproducible environment. You can use the `environment.yml` file or use Docker. The `environment.yml` file is a lighter-weight option compared to Docker. 
 
