@@ -245,7 +245,7 @@ def clean_salary_data(year, raw_data):
     ubc_salary_data[['First_Name', 'Last_Name']] = ubc_salary_data["Name"].apply(lambda x: pd.Series(split_name_with_and_without_comma(x)))
 
     # Remove rows with empty first name
-    ubc_salary_data_removed_empty_rows = ubc_salary_data[(ubc_salary_data['First_Name'] != "") & (ubc_salary_data['First_Name'] != "-")]
+    ubc_salary_data_removed_empty_rows = ubc_salary_data[(ubc_salary_data['First_Name'] != "") & (ubc_salary_data['First_Name'] != "-")].reset_index()
     
     # Select necessary columns
     ubc_salary_data_subset = ubc_salary_data_removed_empty_rows[['Last_Name','First_Name','Remuneration','Expenses']]
@@ -257,6 +257,56 @@ def clean_salary_data(year, raw_data):
     ubc_salary_data_clean['Year'] = f"{year}"
 
     return ubc_salary_data_clean
+
+
+def shorten_name(name):
+    '''remove initials from names, and if two names just keep the first one
+    
+    Parameters:
+    ----------
+    name : str
+        name of a person
+        
+    Returns:
+    -------
+    name : str
+        shortened name
+    
+    Examples:
+    _______
+    >>> name = "A Bobby"
+    >>> shortened_name = shorten_name(name)
+    >>> print(shortened_name)
+    >>> Bobby
+
+    >>> name = "Anne Michele"
+    >>> shortened_name = shorten_name(name)
+    >>> print(shortened_name)
+    >>> Anne
+
+    >>> name = "Kristen"
+    >>> shortened_name = shorten_name(name)
+    >>> print(shortened_name)
+    >>> Kristen
+
+    >>> name = "Anne -Michelle"
+    >>> shortened_name = shorten_name(name)
+    >>> print(shortened_name)
+    >>> Anne-Michelle
+
+    '''
+    name = str(name)
+    name = name.strip() # remove white space
+    name = name.replace(" -","-").replace("- ","-") # make sure names that should be connected are connected
+    if len(name.split(" ")) <= 1: # if only one word, return word
+        shortened_name = name
+    else:
+        words = name.split(" ")
+        for word in words: # remove one-letter initials if they exist
+            if len(word) == 1:
+                words.remove(word)
+        shortened_name = words[0]  # save first word
+    return shortened_name
 
 
 
@@ -294,11 +344,13 @@ def main(raw_salary_data_file, clean_salary_data_output_folder):
     for year, raw_text_data in raw_salary_text_data.items(): # for each year that UBC has data for
         decoded_raw_text_data = unidecode(raw_text_data) # decode raw string (ex: Ayşe -> Ayse)
         salaries = clean_salary_data(year, decoded_raw_text_data) # get clean data as a dataframe 
+        salaries.loc[:,"First_Name"] = salaries["First_Name"].apply(shorten_name) # shorten first name for ease of analysis
+        salaries.loc[:,"Last_Name"] = salaries["Last_Name"].apply(shorten_name) # shorten last name for ease of analysis
         salaries.to_csv(f"{clean_salary_data_output_folder}/FY{year}_clean_salary_data.csv", index = False) # export individual clean dataframes
-        salary_data = pd.concat([salary_data,salaries]) # paste dataframes together
+        salary_data = pd.concat([salary_data,salaries],ignore_index = True) # paste dataframes together
 
-
-    salary_data.to_csv(f"{clean_salary_data_output_folder}/all_clean_salary_data.csv", index = False) # export dataframe with all years
+    # export dataframe with all years
+    salary_data.to_csv(f"{clean_salary_data_output_folder}/all_clean_salary_data.csv", index = False) 
 
 
 if __name__ == "__main__":
