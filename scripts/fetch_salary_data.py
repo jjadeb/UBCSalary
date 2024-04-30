@@ -106,7 +106,14 @@ def fetch_salary_data(pdf_link):
 @click.command()
 @click.option('--raw_salary_data_file', type=str)
 def main(raw_salary_data_file):
-    '''collect and save salary data from The University of British Columbia's financial reports'''
+    ''' This function fetches links to all available Financial Act reports from the University of British Columbia (UBC) 
+    website and collects any new salary data from those reports. It saves the raw salary data in a dictionary.
+
+    Parameters:
+    -----------
+    raw_salary_data_file : str
+        Path to the file where the raw salary data will be retrieved and saved.
+    '''
     
     # Fetch links to all available Financial Act reports
     links = find_yearly_links('https://finance.ubc.ca/reporting-planning-analysis/financial-reports',
