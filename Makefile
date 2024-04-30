@@ -27,6 +27,7 @@ data/gender_corpus/Indian-Male-Names.csv
 	--american_babyname_data_file=data/gender_corpus/american_babyname.csv \
 	--indian_f_babyname_data_file=data/gender_corpus/Indian-Female-Names.csv \
 	--indian_m_babyname_data_file=data/gender_corpus/Indian-Male-Names.csv \
+	--clean_babyname_corpus_output_folder=data/gender_corpus \
 	--prediction_ouput_folder=data/gender_predictions
 
 # Remove intermediary files

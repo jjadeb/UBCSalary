@@ -10,6 +10,7 @@
 # --american_babyname_data_file=data/gender_corpus/american_babyname.csv \
 # --indian_f_babyname_data_file=data/gender_corpus/Indian-Female-Names.csv \
 # --indian_m_babyname_data_file=data/gender_corpus/Indian-Male-Names.csv \
+# --clean_babyname_corpus_output_folder=data/gender_corpus \
 # --prediction_ouput_folder=data/gender_predictions
 
 
@@ -369,9 +370,10 @@ def make_gender_predictions_using_corpus(salary_data, name_corpus):
 @click.option('--american_babyname_data_file', type=str)
 @click.option('--indian_f_babyname_data_file', type=str)
 @click.option('--indian_m_babyname_data_file', type=str)
+@click.option('--clean_babyname_corpus_output_folder', type=str)
 @click.option('--prediction_ouput_folder', type=str)
 def main(clean_salary_data_file, canadian_babyname_data_file, american_babyname_data_file, 
-         indian_f_babyname_data_file, indian_m_babyname_data_file, prediction_ouput_folder):
+         indian_f_babyname_data_file, indian_m_babyname_data_file, clean_babyname_corpus_output_folder, prediction_ouput_folder):
     '''Main function to process salary data and make gender predictions.
     read in the data, clean babyname data, combine babyname data, and make predictions
 
@@ -427,16 +429,19 @@ def main(clean_salary_data_file, canadian_babyname_data_file, american_babyname_
     ############# COMBINE DATA ##############
     canadian_and_american_babyname_data = combine_two_babyname_datasets(canadian_babyname_data,american_babyname_data)
 
-    name_corpus = pd.concat([canadian_and_american_babyname_data,indian_babyname_data]).drop_duplicates(subset = 'First_name_at_birth')
+    canadian_and_american_babyname_data_with_accuracy = create_and_filter_accuracy_column(canadian_and_american_babyname_data)
+
+    name_corpus = pd.concat([canadian_and_american_babyname_data_with_accuracy,indian_babyname_data]).drop_duplicates(subset = 'First_name_at_birth')
 
     ############# MAKE PREDICTIONS ##############
     # Merge the names and gender dataset onto the UBC dataset to see if there are exact name matches
 
     gender_predictions, needs_gender_predictions = make_gender_predictions_using_corpus(salary_data, name_corpus)
 
-    ############# SAVE PREDICTIONS ##############
+    ############# SAVE PREDICTIONS AND CORPUS ##############
     gender_predictions.to_csv(f'{prediction_ouput_folder}/corpus_gender_predictions.csv', index = False)
     needs_gender_predictions.to_csv(f'{prediction_ouput_folder}/needs_gender_predictions.csv', index = False)
+    name_corpus.to_csv(f'{clean_babyname_corpus_output_folder}/clean_name_corpus.csv', index = False)
 
 
 if __name__ == "__main__":
