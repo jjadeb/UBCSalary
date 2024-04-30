@@ -4,7 +4,7 @@
 # This script converts a dictionary of raw salary text data into a clean dataframe.
 # The script then saves the data in csv format in the data folder
 #
-# Usage: python scripts/clean_salary_data.py --raw_salary_data_file=data/salary_data/raw_salary_data.pickle --clean_salary_data_output_folder=data/salary_data
+# Usage: python scripts/clean_salary_data.py --raw_salary_data_file=data/salary_data/raw_salary_data.pickle --clean_salary_data_output_folder=data/salary_data/clean_salary_data
 
 import click
 import pandas as pd
