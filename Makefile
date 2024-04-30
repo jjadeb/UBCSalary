@@ -1,7 +1,12 @@
 
 
-# Run entire analysis
-all : data/gender_predictions/corpus_gender_predictions.csv
+# Run entire project
+all : data/gender_predictions/corpus_gender_predictions.csv models/gender_classifier.pickle
+
+# Run parts of the project
+clean-salary-data : data/salary_data/clean_salary_data/all_clean_salary_data.csv
+corpus-predictions: data/gender_predictions/corpus_gender_predictions.csv
+classifier : models/gender_classifier.pickle
 
 # Fetch new salary data from UBC website to update raw data file
 data/salary_data/raw_salary_data.pickle : scripts/fetch_salary_data.py
@@ -30,7 +35,16 @@ data/gender_corpus/Indian-Male-Names.csv
 	--clean_babyname_corpus_output_folder=data/gender_corpus \
 	--prediction_ouput_folder=data/gender_predictions
 
+# create gender classification model
+models/gender_classifier.pickle data/gender_predictions/nltk_test_data.pickle data/gender_predictions/nltk_training_data.pickle : \
+scripts/nltk_train_gender_classifier.py data/gender_corpus/clean_name_corpus.csv
+	python scripts/nltk_train_gender_classifier.py \
+	--name_data_path=data/gender_corpus/clean_name_corpus.csv \
+	--model_output_folder=models \
+	--data_output_folder=data/gender_predictions
+
 # Remove intermediary files
 clean :
 	-rm -r data/salary_data/clean_salary_data
 	-rm -f data/gender_predictions/corpus_gender_predictions.csv data/gender_predictions/needs_gender_predictions.csv 
+	-rm -f models/gender_classifier.pickle data/gender_predictions/nltk_test_data.pickle data/gender_predictions/nltk_training_data.pickle
