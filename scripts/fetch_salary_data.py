@@ -5,7 +5,7 @@
 # https://finance.ubc.ca/reporting-planning-analysis/financial-reports
 # The script then saves the data in a dictionary format to a pickle file in the data folder
 #
-# Usage: python scripts/fetch_salary_data.py data/salary_data/raw_salary_data.pickle
+# Usage: python scripts/fetch_salary_data.py --raw_salary_data_file=data/salary_data/raw_salary_data.pickle
 
 
 from bs4 import BeautifulSoup
@@ -104,7 +104,7 @@ def fetch_salary_data(pdf_link):
 
 
 @click.command()
-@click.argument('raw_salary_data_file', type=str)
+@click.option('--raw_salary_data_file', type=str)
 def main(raw_salary_data_file):
     '''collect and save salary data from The University of British Columbia's financial reports'''
     
