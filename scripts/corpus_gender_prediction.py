@@ -4,14 +4,32 @@
 # This script predicts peoples genders based off their first name
 # We do this by finding the most common gender associated with a given name in baby name datasets
 #
-# Usage: python scripts/corpus_gender_prediction.py data/salary_data/all_clean_salary_data.csv
+# Usage: python scripts/corpus_gender_prediction.py \
+# --clean_salary_data_file=data/salary_data/all_clean_salary_data.csv \
+# --canadian_babyname_data_file=data/gender_corpus/canadian_babyname.csv \
+# --american_babyname_data_file=data/gender_corpus/american_babyname.csv \
+# --indian_f_babyname_data_file=data/gender_corpus/Indian-Female-Names.csv \
+# --indian_m_babyname_data_file=data/gender_corpus/Indian-Male-Names.csv \
+# --prediction_ouput_folder=data/gender_predictions
+
 
 import pandas as pd
 import click
 from clean_salary_data import shorten_name
 
+
 def sum_frequency_counts(df):
-    '''Group by first name and sex, then sum frequency counts (value) over the years
+    '''Group by first name and sex, then sum frequency counts over the years
+
+    Parameters:
+    ----------
+    df : pandas.DataFrame
+        data with columns 'Sex_at_birth', 'First_name_at_birth', 'Count', and 'Year' 
+        
+    Returns:
+    -------
+    df : pandas.DataFrame
+        data with columns 'Sex_at_birth', 'First_name_at_birth', and 'Count'
     
     Example:
     ___________
@@ -25,20 +43,31 @@ def sum_frequency_counts(df):
     | Sam                 | Male         | Frequency | 3000     | 1999 |
     | Sam                 | Male         | Frequency | 2000     | 2000 |
 
-    Output:
+    Returns:
 
     | Sex_at_birth | First_name_at_birth | Count    |
     | ------------ | ------------------- | -------- | 
     | Female       | Sam                 | 7000     | 
-    | Male         | Sam                 | 5000     | 
-
+    | Male         | Sam                 | 5000     |
     '''
+
      # Group by baby name and sum frequency counts over the years, remove unnecessary features
     df = df[['Sex_at_birth', 'First_name_at_birth','Count']].groupby(['Sex_at_birth', 'First_name_at_birth']).sum().reset_index()
     return df
 
+
 def find_totals(df):
     '''add column with total counts for each baby name (summing up across genders)
+
+    Parameters:
+    ----------
+    df : pandas.DataFrame
+        data with columns 'Sex_at_birth', 'First_name_at_birth', and 'Count' 
+        
+    Returns:
+    -------
+    df : pandas.DataFrame
+        data with columns 'Sex_at_birth', 'First_name_at_birth', 'Count', and 'Total_Count'
     
     Example:
     ________
@@ -50,15 +79,14 @@ def find_totals(df):
     | Female       | Sam                 | 7000  | 
     | Male         | Sam                 | 5000  | 
 
-    Output:
+    Returns:
 
     | Sex_at_birth | First_name_at_birth | Count | Total_Count |
     | ------------ | ------------------- | ----- | ----------- | 
     | Female       | Sam                 | 7000  | 12000       | 
     | Male         | Sam                 | 5000  | 12000       | 
-    
-    
     '''
+
     # create a dataframe with the total count of male + female babys for each baby name
     totals = df[['First_name_at_birth','Count']].groupby(['First_name_at_birth']).sum().reset_index().rename(columns = {'Count':'Total_Count'})
     # Merge the total count with the rest of the baby name data
@@ -68,7 +96,7 @@ def find_totals(df):
 
 def prepare_canadian_babyname_data(canada_df):
     '''Select necessary columns and perform aggregation functions on the canadian baby name dataset
-    so that we are left with columns of sex, name, count for specified sex, and count accross all sexes
+    so that we are left with columns of sex, name, count for specified name and sex, and count for name accross all sexes
     
     Parameters:
     ----------
@@ -82,6 +110,7 @@ def prepare_canadian_babyname_data(canada_df):
         clean candadian babyname data containing the columns: "Sex_at_birth", "First_name_at_birth", 
         "Count", "Total_Count"
     '''
+
     # rename columns to remove spaces:
     canada_df = canada_df.rename(columns = {'First name at birth':'First_name_at_birth', 'Sex at birth':'Sex_at_birth','VALUE':'Count'})
     # shorten baby name to match salary data names
@@ -93,6 +122,7 @@ def prepare_canadian_babyname_data(canada_df):
     # Find the total count of male + female for each baby name
     canadian_names_gender_totals = find_totals(canadian_names_over_all_years)
     return canadian_names_gender_totals
+
 
 def prepare_american_babyname_data(american_df):
     '''Select necessary columns and perform aggregation functions on the american baby name dataset 
@@ -109,6 +139,7 @@ def prepare_american_babyname_data(american_df):
         clean american babyname data containing the columns: "Sex_at_birth", "First_name_at_birth", 
         "Count", "Total_Count"
     '''
+
     # If there are multiple names, just keep the first one
     american_df.loc[:,'Name'] = american_df['Name'].apply(shorten_name)
     # Rename columns to match Canadian data
@@ -123,30 +154,139 @@ def prepare_american_babyname_data(american_df):
 
     return american_names_totals
 
-def combine_american_and_canadian_babyname_data(canadian_df, american_df):
-    '''combine the american and canadian baby name data, ensuring proper formatting'''
+
+def combine_two_babyname_datasets(dataset1, dataset2):
+    '''combine two datasets, adding together counts and total counts from each dataset
+
+    Parameters:
+    ----------
+    dataset1 : pandas.DataFrame
+        data with columns 'Sex_at_birth', 'First_name_at_birth', 'Count', and 'Total_Count'
+    dataset2 : pandas.DataFrame
+        data with columns 'Sex_at_birth', 'First_name_at_birth', 'Count', and 'Total_Count'
+        
+    Returns:
+    -------
+    df : pandas.DataFrame
+        data with columns 'Sex_at_birth', 'First_name_at_birth', 'Count', and 'Total_Count'
     
-    # Combine american and canadian data
-    combined_names = pd.concat([canadian_df,american_df])
+    Example
+    _______
+
+    Input:
+
+    dataset1
+    | Sex_at_birth | First_name_at_birth | Count | Total_Count |
+    | ------------ | ------------------- | ----- | ----------- | 
+    | Female       | Sam                 | 7000  | 12000       |  
+    | Male         | Sam                 | 5000  | 12000       | 
+
+    dataset2
+    | Sex_at_birth | First_name_at_birth | Count | Total_Count |
+    | ------------ | ------------------- | ----- | ----------- | 
+    | Female       | Stephanie           | 1000  | 1000        | 
+    | Male         | Sam                 | 3000  | 3000        |  
+
+    Returns:
+
+    combined_names
+    | Sex_at_birth | First_name_at_birth | Count | Total_Count |
+    | ------------ | ------------------- | ----- | ----------- | 
+    | Female       | Stephanie           | 1000  | 1000        |
+    | Female       | Sam                 | 7000  | 15000       |
+    | Male         | Sam                 | 8000  | 15000       |  
+    '''
+    
+    # Concat two datasets
+    combined_names = pd.concat([dataset1,dataset2])
     # drop null values
     combined_names = combined_names.dropna()
     # make sure that the names are in Title Case to ensure consistency.
     combined_names['First_name_at_birth'] = combined_names['First_name_at_birth'].str.title()
-    # group by name and sex, then sum up the value and total value counts for American and Canadian data
+    # group by name and sex, then add together up the value and total value counts from both datasets
     combined_names = combined_names[['Sex_at_birth', 'First_name_at_birth','Count','Total_Count']].groupby(['Sex_at_birth', 'First_name_at_birth']).sum().reset_index()
     return combined_names
 
-def create_accuracy_column(dataframe):
+
+def create_and_filter_accuracy_column(dataframe):
+    '''Create a new column representing the accuracy of gender prediction for each baby name and filter to 
+    keep the rows with the largest accuracy value for each name.
+
+    Parameters:
+    -----------
+    dataframe : pandas.DataFrame
+        Input DataFrame containing columns 'Sex_at_birth', 'First_name_at_birth', 'Count', and 'Total_Count'.
+
+    Returns:
+    --------
+    dataframe: pandas.DataFrame
+        filtered DataFrame with columns 'Sex_at_birth', 'First_name_at_birth', and 'Accuracy'
+
+    Example
+    -------
+    Input:
+    | Sex_at_birth | First_name_at_birth | Count | Total_Count |
+    | ------------ | ------------------- | ----- | ----------- | 
+    | Female       | Stephanie           | 1000  | 1000        |
+    | Female       | Sam                 | 7000  | 15000       |
+    | Male         | Sam                 | 8000  | 15000       |
+
+    Returns:
+    | Sex_at_birth | First_name_at_birth  | Accuracy |
+    |--------------|----------------------|----------|
+    | Male         | Sam                  | 0.53     |
+    | Female       | Stephanie            | 1.0      |
+    '''
+
     # Create a new column that contains the percentage of counts that are [fem/male] for the given baby name
     dataframe['Accuracy'] = round(dataframe['Count']/dataframe['Total_Count'],2)
     # keep row with the sex that has the highest accuracy
     dataframe = dataframe.sort_values('Accuracy', ascending=False).drop_duplicates('First_name_at_birth').reset_index()
     # drop useless columns
     dataframe = dataframe.drop(columns = ['Count', 'Total_Count'])
-    # sort values by accuracy
-    dataframe.sort_values(by = 'Accuracy')
+    return dataframe
+
 
 def prepare_indian_babyname_data(indian_female_df,indian_male_df):
+    '''Prepare Indian baby name data for analysis by combining and standardizing female and male datasets. Add an accuracy column.
+    IMPORTANT-NOTE: The assigned accuracy value is fairly arbitrary since there is no frequency measure in this data
+
+    Parameters:
+    -----------
+    indian_female_df : pandas.DataFrame
+        DataFrame containing Indian female baby name data with columns 'name','gender', and 'race'
+    indian_male_df : pandas.DataFrame
+        DataFrame containing Indian male baby name data with columns 'name','gender', and 'race'
+
+    Returns:
+    --------
+    pandas.DataFrame
+        DataFrame containing combined Indian baby names data with columns 'Sex_at_birth', 'First_name_at_birth', and 'Accuracy'.
+
+    Example
+    -------
+ 
+    indian_female_df:
+    | name      | gender | race   |
+    |-----------|--------|--------|
+    | Aaradhya  | f      | indian |
+    | diya Min  | f      | indian |
+
+    indian_male_df:
+    | name      | gender | race   |
+    |-----------|--------|--------|
+    | Aarav     | m      | indian |
+    | Arjun     | m      | indian |
+
+    Returns:
+    | Sex_at_birth | First_name_at_birth | Accuracy |
+    |--------------|---------------------|----------|
+    | Female       | Aaradhya            | 0.85     |
+    | Female       | Diya                | 0.85     |
+    | Male         | Aarav               | 0.85     |
+    | Male         | Arjun               | 0.85     |
+    '''
+
     # Combine female and male names
     indian_names = pd.concat([indian_female_df,indian_male_df])
     # rename columns to match name corpus
@@ -156,14 +296,65 @@ def prepare_indian_babyname_data(indian_female_df,indian_male_df):
     # make sure names are in title case
     indian_names['First_name_at_birth'] = indian_names['First_name_at_birth'].str.title()
     # If there are multiple names, just keep the first one
-    indian_names['First_name_at_birth'] = [str(i).split(' ')[0] for i in indian_names['First_name_at_birth']]
+    indian_names['First_name_at_birth'] = indian_names['First_name_at_birth'].apply(shorten_name)
+    # Drop names that appear in the male and female datasets - since cannot determine which is most frequent
+    indian_names = indian_names.drop_duplicates(subset=['First_name_at_birth'], keep = False)
     # drop unnecessary columns
     indian_names = indian_names.drop(columns = ['race'])
     # Apply arbitrary accuracy value
     indian_names['Accuracy'] = 0.85
     return indian_names
 
+
 def make_gender_predictions_using_corpus(salary_data, name_corpus):
+    '''Make gender predictions for individuals in salary data using a large dataset of names 
+    and their associated genders.
+
+    Parameters:
+    -----------
+    salary_data : pandas.DataFrame
+        DataFrame containing salary data with at least a column 'First_Name' representing individual names.
+    name_corpus : pandas.DataFrame
+        DataFrame containing a name corpus with at least columns 'First_name_at_birth' and 'Sex_at_birth' 
+        representing baby names and their associated genders.
+
+    Returns:
+    --------
+    pop_df_predictions : pandas.DataFrame
+        data which contains predictions for individuals with exact name matches found in the name corpus.
+    pop_df_needs_predictions : pandas.DataFrame
+        data which contains individuals where there was no exact name match, and their gender still needs to be predicted.
+
+    Example
+    -------
+    Input:
+    salary_data:
+    | First_Name | Salary |
+    |------------|--------|
+    | John       | 50000  |
+    | Emily      | 60000  |
+    | Jane       | 610000 |
+    | Alex       | 20000  |
+
+    name_corpus:
+    | First_name_at_birth | Sex_at_birth |
+    |----------------------|--------------|
+    | John                 | Male         |
+    | Emily                | Female       |
+
+    Returns:
+    pop_df_predictions:
+    | First_Name | Salary | Sex_at_birth |
+    |------------|--------|--------------|
+    | John       | 50000  | Male         |
+    | Emily      | 60000  | Female       |
+
+    pop_df_needs_predictions:
+    | First_Name | Salary |
+    |------------|--------|
+    | Jane       | 610000 |
+    | Alex       | 20000  |
+    '''
     pop_df_predicted = pd.merge(salary_data, name_corpus, left_on = ['First_Name'], right_on = ['First_name_at_birth'], how = 'left')
     # Create dataset for exact name matches
     pop_df_predictions = pop_df_predicted[pop_df_predicted['Sex_at_birth'].notnull()]
@@ -173,23 +364,52 @@ def make_gender_predictions_using_corpus(salary_data, name_corpus):
      
    
 @click.command
-@click.argument('clean_salary_data_file', type=str)
-def main(clean_salary_data_file):
+@click.option('--clean_salary_data_file', type=str)
+@click.option('--canadian_babyname_data_file', type=str)
+@click.option('--american_babyname_data_file', type=str)
+@click.option('--indian_f_babyname_data_file', type=str)
+@click.option('--indian_m_babyname_data_file', type=str)
+@click.option('--prediction_ouput_folder', type=str)
+def main(clean_salary_data_file, canadian_babyname_data_file, american_babyname_data_file, 
+         indian_f_babyname_data_file, indian_m_babyname_data_file, prediction_ouput_folder):
+    '''Main function to process salary data and make gender predictions.
+    read in the data, clean babyname data, combine babyname data, and make predictions
+
+    Parameters:
+    -----------
+    clean_salary_data_file : str
+        Path to the clean salary data file.
+    canadian_babyname_data_file : str
+        Path to the canadian babyname data file.
+    american_babyname_data_file : str
+        Path to the american babyname data file.
+    indian_f_babyname_data_file : str
+        Path to the indian female babyname data file.
+    indian_m_babyname_data_file : str
+        Path to the indian male babyname data file.
+
+    Output:
+    -------
+    corpus_gender_predictions.csv : csv
+        data which contains predictions for individuals with exact name matches found in the name corpus.
+    needs_gender_predictions.csv : csv
+        data which contains individuals where there was no exact name match, and their gender still needs to be predicted.
+    '''
 
     ############# READ IN DATA ##############
-    # Read in canadian data we will use to train our model
+    # Read in canadian data we will use to make predictions
     # Data from statcan - https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710014701
     # Includes baby name data (name, sex at birth) for babies from 1991 to 2021
-    canadian_names = pd.read_csv('data/gender_corpus/17100147.csv')
+    canadian_names = pd.read_csv(canadian_babyname_data_file)
 
-    # Read in extra data for american names and clean it up so that it can be merged with other training data
+    # Read in extra data for american names and clean it up so that it can be merged with other name-sex data
     # https://www.kaggle.com/datasets/kaggle/us-baby-names/code
-    american_names = pd.read_csv("data/gender_corpus/NationalNames.csv")
+    american_names = pd.read_csv(american_babyname_data_file)
 
-    # Read in data for indian names and clean it up so that it can be merged with other training data
+    # Read in data for indian names and clean it up so that it can be merged with other name-sex data
     # https://www.kaggle.com/datasets/ananysharma/indian-names-dataset
-    f_indian_names = pd.read_csv('data/gender_corpus/Indian-Female-Names.csv')
-    m_indian_names = pd.read_csv('data/gender_corpus/Indian-Male-Names.csv')
+    f_indian_names = pd.read_csv(indian_f_babyname_data_file)
+    m_indian_names = pd.read_csv(indian_m_babyname_data_file)
 
     # Read in clean salary data
     salary_data = pd.read_csv(clean_salary_data_file)
@@ -205,7 +425,7 @@ def main(clean_salary_data_file):
     indian_babyname_data = prepare_indian_babyname_data(f_indian_names, m_indian_names)
 
     ############# COMBINE DATA ##############
-    canadian_and_american_babyname_data = combine_american_and_canadian_babyname_data(canadian_babyname_data,american_babyname_data)
+    canadian_and_american_babyname_data = combine_two_babyname_datasets(canadian_babyname_data,american_babyname_data)
 
     name_corpus = pd.concat([canadian_and_american_babyname_data,indian_babyname_data]).drop_duplicates(subset = 'First_name_at_birth')
 
@@ -215,8 +435,8 @@ def main(clean_salary_data_file):
     gender_predictions, needs_gender_predictions = make_gender_predictions_using_corpus(salary_data, name_corpus)
 
     ############# SAVE PREDICTIONS ##############
-    gender_predictions.to_csv('data/gender_predictions/corpus_gender_predictions.csv', index = False)
-    needs_gender_predictions.to_csv('data/gender_predictions/needs_gender_predictions.csv', index = False)
+    gender_predictions.to_csv(f'{prediction_ouput_folder}/corpus_gender_predictions.csv', index = False)
+    needs_gender_predictions.to_csv(f'{prediction_ouput_folder}/needs_gender_predictions.csv', index = False)
 
 
 if __name__ == "__main__":
