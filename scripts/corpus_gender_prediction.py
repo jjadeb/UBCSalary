@@ -5,7 +5,7 @@
 # We do this by finding the most common gender associated with a given name in baby name datasets
 #
 # Usage: python scripts/corpus_gender_prediction.py \
-# --clean_salary_data_file=data/salary_data/all_clean_salary_data.csv \
+# --clean_salary_data_file=data/salary_data/clean_salary_data/all_clean_salary_data.csv \
 # --canadian_babyname_data_file=data/gender_corpus/canadian_babyname.csv \
 # --american_babyname_data_file=data/gender_corpus/american_babyname.csv \
 # --indian_f_babyname_data_file=data/gender_corpus/Indian-Female-Names.csv \
