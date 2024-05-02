@@ -44,11 +44,13 @@ def gender_features(word):
     Output: {'last_5_letters': 'emily', 'last_two_letters': 'ly', 'last_letter': 'y',
              'last_3_letters': 'ily', 'last_4_letters': 'mily', 'name': 'emily'}
     '''
+
     word = word.lower()
     word_feats = {'last_5_letters': word[-5:], 'last_two_letters': word[-2:],
             'last_letter': word[-1:], 'last_3_letters': word[-3:], 'last_4_letters': word[-4:], 'name': word}
 
     return word_feats
+
 
 def feature_engineering(data, name_col, gender_col):
     '''Perform feature engineering on a dataset
@@ -85,8 +87,13 @@ def feature_engineering(data, name_col, gender_col):
              ({'last_5_letters': 'odiya', 'last_two_letters': 'ya', 'last_letter': 'a',
                'last_3_letters': 'iya', 'last_4_letters': 'diya', 'name': 'odiya'}, 'f')]
     '''
+
+    # make sure name column is of type string
+    data.loc[:,name_col] = data[name_col].astype(str) 
+    # engineer features for a given name column
     featuresets = [(gender_features(row[name_col]), row[gender_col]) for (index, row) in data.iterrows()]
     return featuresets
+
 
 @click.command
 @click.option('--name_data_path',type=str)
@@ -109,16 +116,16 @@ def main(name_data_path,model_output_folder,data_output_folder):
         Path to the folder where the trained model will be saved.
     data_output_folder : str
         Path to the folder where the training and test data will be saved.
-'''
+    '''
 
-    #read in babyname data
+    # read in babyname data cleaned in the corpus gender prediction script
     name_corpus = pd.read_csv(name_data_path)
 
     # shuffle our data
     name_corpus = name_corpus.sample(frac=1,random_state=123)
 
     # collect features for each name in our data
-    featuresets = feature_engineering(name_corpus, 'First_name_at_birth', 'Sex_at_birth')
+    featuresets = feature_engineering(name_corpus, 'First_Name', 'Sex_at_birth')
 
     # split the shuffled data into train and test sets
     train_set, test_set = featuresets[3157:], featuresets[:3157]

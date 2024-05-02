@@ -25,35 +25,35 @@ def sum_frequency_counts(df):
     Parameters:
     ----------
     df : pandas.DataFrame
-        data with columns 'Sex_at_birth', 'First_name_at_birth', 'Count', and 'Year' 
+        data with columns 'Sex_at_birth', 'First_Name', 'Count', and 'Year' 
         
     Returns:
     -------
     df : pandas.DataFrame
-        data with columns 'Sex_at_birth', 'First_name_at_birth', and 'Count'
+        data with columns 'Sex_at_birth', 'First_Name', and 'Count'
     
     Example:
     ___________
 
     Input:
 
-    | First_name_at_birth | Sex_at_birth | Indicator | Count    | Year |
-    | ------------------- | -------------| ----------| -------- | ---- |
-    | Sam                 | Female       | Frequency | 5000     | 1999 |
-    | Sam                 | Female       | Frequency | 2000     | 2000 |
-    | Sam                 | Male         | Frequency | 3000     | 1999 |
-    | Sam                 | Male         | Frequency | 2000     | 2000 |
+    | First_Name | Sex_at_birth | Indicator | Count    | Year |
+    | ---------- | -------------| ----------| -------- | ---- |
+    | Sam        | Female       | Frequency | 5000     | 1999 |
+    | Sam        | Female       | Frequency | 2000     | 2000 |
+    | Sam        | Male         | Frequency | 3000     | 1999 |
+    | Sam        | Male         | Frequency | 2000     | 2000 |
 
     Returns:
 
-    | Sex_at_birth | First_name_at_birth | Count    |
-    | ------------ | ------------------- | -------- | 
-    | Female       | Sam                 | 7000     | 
-    | Male         | Sam                 | 5000     |
+    | Sex_at_birth | First_Name | Count    |
+    | ------------ | -----------| -------- | 
+    | Female       | Sam        | 7000     | 
+    | Male         | Sam        | 5000     |
     '''
 
      # Group by baby name and sum frequency counts over the years, remove unnecessary features
-    df = df[['Sex_at_birth', 'First_name_at_birth','Count']].groupby(['Sex_at_birth', 'First_name_at_birth']).sum().reset_index()
+    df = df[['Sex_at_birth', 'First_Name','Count']].groupby(['Sex_at_birth', 'First_Name']).sum().reset_index()
     return df
 
 
@@ -63,35 +63,35 @@ def find_totals(df):
     Parameters:
     ----------
     df : pandas.DataFrame
-        data with columns 'Sex_at_birth', 'First_name_at_birth', and 'Count' 
+        data with columns 'Sex_at_birth', 'First_Name', and 'Count' 
         
     Returns:
     -------
     df : pandas.DataFrame
-        data with columns 'Sex_at_birth', 'First_name_at_birth', 'Count', and 'Total_Count'
+        data with columns 'Sex_at_birth', 'First_Name', 'Count', and 'Total_Count'
     
     Example:
     ________
 
     Input:
 
-    | Sex_at_birth | First_name_at_birth | Count |
-    | ------------ | ------------------- | ----- | 
-    | Female       | Sam                 | 7000  | 
-    | Male         | Sam                 | 5000  | 
+    | Sex_at_birth | First_Name | Count |
+    | ------------ | -----------| ----- | 
+    | Female       | Sam        | 7000  | 
+    | Male         | Sam        | 5000  | 
 
     Returns:
 
-    | Sex_at_birth | First_name_at_birth | Count | Total_Count |
-    | ------------ | ------------------- | ----- | ----------- | 
-    | Female       | Sam                 | 7000  | 12000       | 
-    | Male         | Sam                 | 5000  | 12000       | 
+    | Sex_at_birth | First_Name | Count | Total_Count |
+    | ------------ | ---------- | ----- | ----------- | 
+    | Female       | Sam        | 7000  | 12000       | 
+    | Male         | Sam        | 5000  | 12000       | 
     '''
 
     # create a dataframe with the total count of male + female babys for each baby name
-    totals = df[['First_name_at_birth','Count']].groupby(['First_name_at_birth']).sum().reset_index().rename(columns = {'Count':'Total_Count'})
+    totals = df[['First_Name','Count']].groupby(['First_Name']).sum().reset_index().rename(columns = {'Count':'Total_Count'})
     # Merge the total count with the rest of the baby name data
-    df = pd.merge(df, totals, on = 'First_name_at_birth', how = 'left')
+    df = pd.merge(df, totals, on = 'First_Name', how = 'left')
     return df
 
 
@@ -108,14 +108,14 @@ def prepare_canadian_babyname_data(canada_df):
     Returns:
     -------
     canadian_names_gender_totals : pandas.DataFrame
-        clean candadian babyname data containing the columns: "Sex_at_birth", "First_name_at_birth", 
+        clean candadian babyname data containing the columns: "Sex_at_birth", "First_Name", 
         "Count", "Total_Count"
     '''
 
     # rename columns to remove spaces:
-    canada_df = canada_df.rename(columns = {'First name at birth':'First_name_at_birth', 'Sex at birth':'Sex_at_birth','VALUE':'Count'})
+    canada_df = canada_df.rename(columns = {'First name at birth':'First_Name', 'Sex at birth':'Sex_at_birth','VALUE':'Count'})
     # shorten baby name to match salary data names
-    canada_df.loc[:,'First_name_at_birth'] = canada_df['First_name_at_birth'].apply(shorten_name)
+    canada_df.loc[:,'First_Name'] = canada_df['First_Name'].apply(shorten_name)
     # filter for frequency of baby name values (each baby name has a row for frequency, rank, and proportion)
     canadian_names_frequency = canada_df.query("Indicator == 'Frequency'")
     # Group by baby name and sum frequency counts over the years, remove unnecessary features
@@ -137,14 +137,14 @@ def prepare_american_babyname_data(american_df):
     Returns:
     -------
     american_names_totals : pandas.DataFrame
-        clean american babyname data containing the columns: "Sex_at_birth", "First_name_at_birth", 
+        clean american babyname data containing the columns: "Sex_at_birth", "First_Name", 
         "Count", "Total_Count"
     '''
 
     # If there are multiple names, just keep the first one
     american_df.loc[:,'Name'] = american_df['Name'].apply(shorten_name)
     # Rename columns to match Canadian data
-    american_names_relable = american_df.rename(columns = {'Name':'First_name_at_birth', 'Gender':'Sex_at_birth'})
+    american_names_relable = american_df.rename(columns = {'Name':'First_Name', 'Gender':'Sex_at_birth'})
     # Relabel sex data to match Canadian data
     american_names_relable['Sex_at_birth'] = american_names_relable['Sex_at_birth'].replace({'F':'Female','M':'Male'})
 
@@ -162,14 +162,14 @@ def combine_two_babyname_datasets(dataset1, dataset2):
     Parameters:
     ----------
     dataset1 : pandas.DataFrame
-        data with columns 'Sex_at_birth', 'First_name_at_birth', 'Count', and 'Total_Count'
+        data with columns 'Sex_at_birth', 'First_Name', 'Count', and 'Total_Count'
     dataset2 : pandas.DataFrame
-        data with columns 'Sex_at_birth', 'First_name_at_birth', 'Count', and 'Total_Count'
+        data with columns 'Sex_at_birth', 'First_Name', 'Count', and 'Total_Count'
         
     Returns:
     -------
     df : pandas.DataFrame
-        data with columns 'Sex_at_birth', 'First_name_at_birth', 'Count', and 'Total_Count'
+        data with columns 'Sex_at_birth', 'First_Name', 'Count', and 'Total_Count'
     
     Example
     _______
@@ -177,25 +177,25 @@ def combine_two_babyname_datasets(dataset1, dataset2):
     Input:
 
     dataset1
-    | Sex_at_birth | First_name_at_birth | Count | Total_Count |
-    | ------------ | ------------------- | ----- | ----------- | 
-    | Female       | Sam                 | 7000  | 12000       |  
-    | Male         | Sam                 | 5000  | 12000       | 
+    | Sex_at_birth | First_Name | Count | Total_Count |
+    | ------------ | ---------- | ----- | ----------- | 
+    | Female       | Sam        | 7000  | 12000       |  
+    | Male         | Sam        | 5000  | 12000       | 
 
     dataset2
-    | Sex_at_birth | First_name_at_birth | Count | Total_Count |
-    | ------------ | ------------------- | ----- | ----------- | 
-    | Female       | Stephanie           | 1000  | 1000        | 
-    | Male         | Sam                 | 3000  | 3000        |  
+    | Sex_at_birth | First_Name | Count | Total_Count |
+    | ------------ | ---------- | ----- | ----------- | 
+    | Female       | Stephanie  | 1000  | 1000        | 
+    | Male         | Sam        | 3000  | 3000        |  
 
     Returns:
 
     combined_names
-    | Sex_at_birth | First_name_at_birth | Count | Total_Count |
-    | ------------ | ------------------- | ----- | ----------- | 
-    | Female       | Stephanie           | 1000  | 1000        |
-    | Female       | Sam                 | 7000  | 15000       |
-    | Male         | Sam                 | 8000  | 15000       |  
+    | Sex_at_birth | First_Name | Count | Total_Count |
+    | ------------ | ---------- | ----- | ----------- | 
+    | Female       | Stephanie  | 1000  | 1000        |
+    | Female       | Sam        | 7000  | 15000       |
+    | Male         | Sam        | 8000  | 15000       |  
     '''
     
     # Concat two datasets
@@ -203,9 +203,9 @@ def combine_two_babyname_datasets(dataset1, dataset2):
     # drop null values
     combined_names = combined_names.dropna()
     # make sure that the names are in Title Case to ensure consistency.
-    combined_names['First_name_at_birth'] = combined_names['First_name_at_birth'].str.title()
+    combined_names['First_Name'] = combined_names['First_Name'].str.title()
     # group by name and sex, then add together up the value and total value counts from both datasets
-    combined_names = combined_names[['Sex_at_birth', 'First_name_at_birth','Count','Total_Count']].groupby(['Sex_at_birth', 'First_name_at_birth']).sum().reset_index()
+    combined_names = combined_names[['Sex_at_birth', 'First_Name','Count','Total_Count']].groupby(['Sex_at_birth', 'First_Name']).sum().reset_index()
     return combined_names
 
 
@@ -216,33 +216,33 @@ def create_and_filter_accuracy_column(dataframe):
     Parameters:
     -----------
     dataframe : pandas.DataFrame
-        Input DataFrame containing columns 'Sex_at_birth', 'First_name_at_birth', 'Count', and 'Total_Count'.
+        Input DataFrame containing columns 'Sex_at_birth', 'First_Name', 'Count', and 'Total_Count'.
 
     Returns:
     --------
     dataframe: pandas.DataFrame
-        filtered DataFrame with columns 'Sex_at_birth', 'First_name_at_birth', and 'Accuracy'
+        filtered DataFrame with columns 'Sex_at_birth', 'First_Name', and 'Accuracy'
 
     Example
     -------
     Input:
-    | Sex_at_birth | First_name_at_birth | Count | Total_Count |
-    | ------------ | ------------------- | ----- | ----------- | 
-    | Female       | Stephanie           | 1000  | 1000        |
-    | Female       | Sam                 | 7000  | 15000       |
-    | Male         | Sam                 | 8000  | 15000       |
+    | Sex_at_birth | First_Name | Count | Total_Count |
+    | ------------ | ---------- | ----- | ----------- | 
+    | Female       | Stephanie  | 1000  | 1000        |
+    | Female       | Sam        | 7000  | 15000       |
+    | Male         | Sam        | 8000  | 15000       |
 
     Returns:
-    | Sex_at_birth | First_name_at_birth  | Accuracy |
-    |--------------|----------------------|----------|
-    | Male         | Sam                  | 0.53     |
-    | Female       | Stephanie            | 1.0      |
+    | Sex_at_birth | First_Name  | Accuracy |
+    |--------------|------------ |----------|
+    | Male         | Sam         | 0.53     |
+    | Female       | Stephanie   | 1.0      |
     '''
 
     # Create a new column that contains the percentage of counts that are [fem/male] for the given baby name
     dataframe['Accuracy'] = round(dataframe['Count']/dataframe['Total_Count'],2)
     # keep row with the sex that has the highest accuracy
-    dataframe = dataframe.sort_values('Accuracy', ascending=False).drop_duplicates('First_name_at_birth').reset_index()
+    dataframe = dataframe.sort_values('Accuracy', ascending=False).drop_duplicates('First_Name').reset_index()
     # drop useless columns
     dataframe = dataframe.drop(columns = ['Count', 'Total_Count'])
     return dataframe
@@ -262,7 +262,7 @@ def prepare_indian_babyname_data(indian_female_df,indian_male_df):
     Returns:
     --------
     pandas.DataFrame
-        DataFrame containing combined Indian baby names data with columns 'Sex_at_birth', 'First_name_at_birth', and 'Accuracy'.
+        DataFrame containing combined Indian baby names data with columns 'Sex_at_birth', 'First_Name', and 'Accuracy'.
 
     Example
     -------
@@ -280,26 +280,26 @@ def prepare_indian_babyname_data(indian_female_df,indian_male_df):
     | Arjun     | m      | indian |
 
     Returns:
-    | Sex_at_birth | First_name_at_birth | Accuracy |
-    |--------------|---------------------|----------|
-    | Female       | Aaradhya            | 0.85     |
-    | Female       | Diya                | 0.85     |
-    | Male         | Aarav               | 0.85     |
-    | Male         | Arjun               | 0.85     |
+    | Sex_at_birth | First_Name | Accuracy |
+    |--------------|----------- |----------|
+    | Female       | Aaradhya   | 0.85     |
+    | Female       | Diya       | 0.85     |
+    | Male         | Aarav      | 0.85     |
+    | Male         | Arjun      | 0.85     |
     '''
 
     # Combine female and male names
     indian_names = pd.concat([indian_female_df,indian_male_df])
     # rename columns to match name corpus
-    indian_names = indian_names.rename(columns = {'name':'First_name_at_birth', 'gender':'Sex_at_birth'})
+    indian_names = indian_names.rename(columns = {'name':'First_Name', 'gender':'Sex_at_birth'})
     # relabel sex data to match name corpus
     indian_names['Sex_at_birth'] = indian_names['Sex_at_birth'].replace({'f':'Female','m':'Male'})
     # make sure names are in title case
-    indian_names['First_name_at_birth'] = indian_names['First_name_at_birth'].str.title()
+    indian_names['First_Name'] = indian_names['First_Name'].str.title()
     # If there are multiple names, just keep the first one
-    indian_names['First_name_at_birth'] = indian_names['First_name_at_birth'].apply(shorten_name)
+    indian_names['First_Name'] = indian_names['First_Name'].apply(shorten_name)
     # Drop names that appear in the male and female datasets - since cannot determine which is most frequent
-    indian_names = indian_names.drop_duplicates(subset=['First_name_at_birth'], keep = False)
+    indian_names = indian_names.drop_duplicates(subset=['First_Name'], keep = False)
     # drop unnecessary columns
     indian_names = indian_names.drop(columns = ['race'])
     # Apply arbitrary accuracy value
@@ -316,7 +316,7 @@ def make_gender_predictions_using_corpus(salary_data, name_corpus):
     salary_data : pandas.DataFrame
         DataFrame containing salary data with at least a column 'First_Name' representing individual names.
     name_corpus : pandas.DataFrame
-        DataFrame containing a name corpus with at least columns 'First_name_at_birth' and 'Sex_at_birth' 
+        DataFrame containing a name corpus with at least columns 'First_Name' and 'Sex_at_birth' 
         representing baby names and their associated genders.
 
     Returns:
@@ -338,7 +338,7 @@ def make_gender_predictions_using_corpus(salary_data, name_corpus):
     | Alex       | 20000  |
 
     name_corpus:
-    | First_name_at_birth | Sex_at_birth |
+    | First_Name | Sex_at_birth |
     |----------------------|--------------|
     | John                 | Male         |
     | Emily                | Female       |
@@ -356,7 +356,7 @@ def make_gender_predictions_using_corpus(salary_data, name_corpus):
     | Jane       | 610000 |
     | Alex       | 20000  |
     '''
-    pop_df_predicted = pd.merge(salary_data, name_corpus, left_on = ['First_Name'], right_on = ['First_name_at_birth'], how = 'left')
+    pop_df_predicted = pd.merge(salary_data, name_corpus, on = ['First_Name'], how = 'left')
     # Create dataset for exact name matches
     pop_df_predictions = pop_df_predicted[pop_df_predicted['Sex_at_birth'].notnull()]
     # Create dataset where there was no exact match and sex still needs to be predicted
@@ -431,7 +431,7 @@ def main(clean_salary_data_file, canadian_babyname_data_file, american_babyname_
 
     canadian_and_american_babyname_data_with_accuracy = create_and_filter_accuracy_column(canadian_and_american_babyname_data)
 
-    name_corpus = pd.concat([canadian_and_american_babyname_data_with_accuracy,indian_babyname_data]).drop_duplicates(subset = 'First_name_at_birth')
+    name_corpus = pd.concat([canadian_and_american_babyname_data_with_accuracy,indian_babyname_data]).drop_duplicates(subset = 'First_Name')
 
     ############# MAKE PREDICTIONS ##############
     # Merge the names and gender dataset onto the UBC dataset to see if there are exact name matches
