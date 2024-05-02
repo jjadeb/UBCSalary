@@ -118,7 +118,7 @@ def main(name_data_path,model_output_folder,data_output_folder):
         Path to the folder where the training and test data will be saved.
     '''
 
-    #read in babyname data
+    # read in babyname data cleaned in the corpus gender prediction script
     name_corpus = pd.read_csv(name_data_path)
 
     # shuffle our data
