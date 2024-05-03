@@ -71,6 +71,8 @@ def create_top_ten_bar_plot(data, numeric_column_name, categorical_column_name, 
 
     plt.tight_layout()
     plt.savefig(f'plots/bar_plots/top_ten_{file_name}.png', dpi=300, bbox_inches='tight')
+    plt.close()
+
 
 
 def create_top_ten_bar_plots_for_all_years():
@@ -88,7 +90,7 @@ def create_histogram_plot_for_one_year(data, min_value, max_value, numeric_col, 
 
     # Create histogram plot
     plt.figure(figsize=(9, 5))
-    plt.hist(male_expenses, bins, alpha=0.5, label='Male', color="#2B2F42")
+    plt.hist(male_expenses, bins, alpha=0.5, label='Male', color="#6495ED")
     plt.hist(female_expenses, bins, alpha=0.5, label='Female', color="#FF8C00")
     plt.legend(loc='upper right', title = "Guessed Gender")
 
@@ -104,6 +106,7 @@ def create_histogram_plot_for_one_year(data, min_value, max_value, numeric_col, 
 
     plt.grid(True)
     plt.savefig(f'plots/histogram_plots/histogram_of_{file_name}.png', dpi=300, bbox_inches='tight')
+    plt.close()
 
 def create_summary_table(data, numeric_col1, numeric_col2):
     ## create summary data table and store min/max values
@@ -136,6 +139,8 @@ def create_box_plots(data, numeric_col, categorical_col, xlab, ylab, title, file
     plt.ylabel(ylab, fontsize=14)
     plt.title(title , fontsize=16)
     plt.savefig(f'plots/box_plots/boxplot_of_{file_name}.png', dpi=300, bbox_inches='tight')
+    plt.close()
+
 
 
 def main():
