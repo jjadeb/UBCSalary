@@ -67,7 +67,7 @@ data/gender_predictions/needs_gender_predictions.csv
 	--nltk_predictions_output_path=data/gender_predictions/nltk_gender_predictions.csv
 
 # combine and clean all gender predictions
-data/gender_predictions/all_clean_gender_predictions.csv : \
+data/gender_predictions/all_clean_gender_predictions.csv : scripts/combine_and_clean_predictions.py \
 data/gender_predictions/nltk_gender_predictions.csv data/gender_predictions/corpus_gender_predictions.csv
 	python scripts/combine_and_clean_predictions.py \
 	--nltk_gender_predictions_input=data/gender_predictions/nltk_gender_predictions.csv \
