@@ -11,7 +11,10 @@ import numpy
 import matplotlib.pyplot as plt
 from math import log10
 import numpy as np
+import seaborn as sns
 plt.rcParams.update({'font.size': 14, 'font.family': 'sans-serif'})
+sns.set_theme(rc={'figure.figsize':(10,4)},font = "sans-serif")
+pd.options.mode.chained_assignment = None  # copy warnings are not an issue for this script
 
 def prepare_data_for_plot(data, year, salary_col, first_name_col, last_name_col, name_col):
     # filter for specific year
@@ -67,7 +70,7 @@ def create_top_ten_bar_plot(data, numeric_column_name, categorical_column_name, 
     plt.grid(False)
 
     plt.tight_layout()
-    plt.savefig(f'plots/bar_plots/top_ten_{file_name}.png')
+    plt.savefig(f'plots/bar_plots/top_ten_{file_name}.png', dpi=300, bbox_inches='tight')
 
 
 def create_top_ten_bar_plots_for_all_years():
@@ -100,8 +103,39 @@ def create_histogram_plot_for_one_year(data, min_value, max_value, numeric_col, 
     plt.gca().spines['right'].set_visible(False)
 
     plt.grid(True)
-    plt.savefig(f'plots/histogram_plots/histogram_of_{file_name}.png')
+    plt.savefig(f'plots/histogram_plots/histogram_of_{file_name}.png', dpi=300, bbox_inches='tight')
 
+def create_summary_table(data, numeric_col1, numeric_col2):
+    ## create summary data table and store min/max values
+    data_summary = data[[numeric_col1,numeric_col2]].apply(
+    {
+        numeric_col1:["mean","median","min","max"],
+        numeric_col2:["mean","median","min","max"]
+    }
+    ).map(lambda x: round(x, 2))
+
+    max_col2 = data_summary.loc['max',numeric_col2]
+    min_col2 = data_summary.loc['min',numeric_col2]
+    max_col1 = data_summary.loc['max',numeric_col1]
+    min_col1 = data_summary.loc['min',numeric_col1]
+    return data_summary, min_col1, max_col1, min_col2, max_col2
+
+
+def create_box_plots(data, numeric_col, categorical_col, xlab, ylab, title, file_name):
+
+    plt.figure(figsize=(9, 5))
+    sns.boxplot(
+        data=data, x= numeric_col, y=categorical_col,
+        hue = categorical_col,
+        palette=[sns.xkcd_rgb["light blue"], sns.xkcd_rgb["light orange"]]
+    )
+
+    # Set labels and title
+    plt.legend([],[], frameon=False)
+    plt.xlabel(xlab , fontsize=14)
+    plt.ylabel(ylab, fontsize=14)
+    plt.title(title , fontsize=16)
+    plt.savefig(f'plots/box_plots/boxplot_of_{file_name}.png', dpi=300, bbox_inches='tight')
 
 
 def main():
@@ -117,18 +151,7 @@ def main():
 
         year = str(int(year))
 
-        ## create summary data table and store min/max values
-        data_summary_year = processed_data[["Remuneration","Expenses"]].apply(
-        {
-            "Remuneration":["mean","median","min","max"],
-            "Expenses":["mean","median","min","max"]
-        }
-        ).map(lambda x: round(x, 2))
-
-        max_expenses = data_summary_year.loc['max','Expenses']
-        min_expenses = data_summary_year.loc['min','Expenses']
-        max_remuneration = data_summary_year.loc['max','Remuneration']
-        min_remuneration = data_summary_year.loc['min','Remuneration']
+        data_summary_year, min_remuneration, max_remuneration, min_expenses, max_expenses = create_summary_table(processed_data, "Remuneration", "Expenses")
 
         # create top ten bar plots for salaries
         create_top_ten_bar_plot(processed_data, 'Remuneration', 'Name', 'Sex_at_birth', 'Female',
@@ -153,6 +176,16 @@ def main():
                                            f'Distribution of Expenses by Gender {year}', 
                                            'Expenses (CAD)', 'Frequency', 
                                            f'expenses_by_gender_{year}',0.2,200)
+        
+        # create box plots for salary split by gender
+        create_box_plots(processed_data, 'Remuneration', 'Sex_at_birth', "\nSalary (CAD, in thousands)", 
+                         "Guessed Gender", f"Salary Distribution by Gender in {year} \n", 
+                         f'salary_by_gender_{year}')
+        
+        # create box plots for expenses split by gender
+        create_box_plots(processed_data, 'Expenses', 'Sex_at_birth', "\nExpenses (CAD)", 
+                         "Guessed Gender", f"Expenses Distribution by Gender in {year} \n", 
+                         f'expenses_by_gender_{year}')
 
 
 
