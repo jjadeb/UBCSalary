@@ -6,6 +6,15 @@ To prioritize learning, rather than directly requesting salary data from UBC by 
 
 The project involves several steps: gathering and cleaning salary data, making staff gender predictions using large babyname datasets, using a machine learning model to guess remaining genders, and visualizing the cleaned data.
 
+## Table Of Contents  
+- [Project History](#project-history)
+- [Ethics](#ethics)
+- [Reprodicible Environment](#reprodicible-environment)
+- [Developer Notes](#developer-notes)
+- [Dependencies](#dependencies)
+- [License](#license)
+
+
 ## Project History 
 
 The final phase of this project, a report detailing the analysis, is a work in progress. For now, you can see the plots created for the analysis in the [plots directory](plots). 
@@ -21,7 +30,7 @@ I encourage anyone who notices a misgendering within this project to raise an is
 Please refer to the [Code of Conduct](CODE_OF_CONDUCT.md) for further details on the inclusive standards of this project. Your cooperation in fostering an inclusive environment is greatly appreciated.
 
 
-## Running the Analysis in a Reprodicible Environment
+## Reprodicible Environment
 
 There are two options for running my analysis in a reproducible environment. You can use the `environment.yml` file or use Docker. The `environment.yml` file is a lighter-weight option compared to Docker. 
 
@@ -78,7 +87,7 @@ docker-compose run --rm ubcsalaryimg make all
 
 Some instructions have been borrowed from [this repository](https://github.com/ttimbers/breast_cancer_predictor_py).
 
-## Developer notes
+## Developer Notes
 
 ### Working with the project in the container using Jupyter lab
 
@@ -115,6 +124,10 @@ Some instructions have been borrowed from [this repository](https://github.com/t
 - Data Wrangling
 - Data Visualization
 - Machine Learning (natural language processing)
+
+## Dependencies
+
+Docker is a container solution used to manage the software dependencies for this project. The Docker image used for this project is based on the quay.io/jupyter/minimal-notebook:aarch64-ubuntu-22.04 image. Additional dependencies are specified int the [Dockerfile](Dockerfile).
 
 ## License
 
