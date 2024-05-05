@@ -8,3 +8,4 @@
 .npm
 .bash_history
 .conda
+__pycache__
