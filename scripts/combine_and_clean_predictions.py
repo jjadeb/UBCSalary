@@ -97,6 +97,7 @@ def main(nltk_gender_predictions_input,corpus_gender_predictions_input,all_gende
     complete_predictions_clean = change_sex(complete_predictions_clean, "Santa", "Ono", "Male")
     complete_predictions_clean = change_sex(complete_predictions_clean, "Ali", "Lazrak", "Male")
     complete_predictions_clean = change_sex(complete_predictions_clean, "Jan", "Bena", "Female")
+    complete_predictions_clean = change_sex(complete_predictions_clean, "Zu-Hua", "Gao", "Male")
     
     # export dataset
     complete_predictions_clean.to_csv(all_gender_predictions_output, index = False)

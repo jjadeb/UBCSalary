@@ -252,6 +252,7 @@ def clean_salary_data(year, raw_data):
     
     # turn salary column from string to numeric
     ubc_salary_data_clean = make_column_numeric(ubc_salary_data_subset, 'Remuneration')
+    ubc_salary_data_clean = make_column_numeric(ubc_salary_data_subset, 'Expenses')
 
     # add given year as column
     ubc_salary_data_clean['Year'] = f"{year}"
