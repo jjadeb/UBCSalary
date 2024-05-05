@@ -109,16 +109,6 @@ To shut down the container and clean up the resources, type Cntrl + C in the ter
 ```{bash}
 docker compose rm
 ```
-
-### Working with the project in the container using VSCode
-Note if you prefer to work in VS Code, you can run the following from the root of the project in a terminal in VS Code to launch the container in the terminal there:
-
-```{bash}
-docker compose run --rm terminal bash
-```
-
-To exit the container type exit in the terminal.
-
 Some instructions have been borrowed from [this repository](https://github.com/ttimbers/breast_cancer_predictor_py)
 
 ## Key Skills Learned
