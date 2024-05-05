@@ -1,18 +1,18 @@
 ## Data
 
-There are three main folders in this directory: salary data, gender corpus, and gender predictions. The salary data and gender prediction folders should be empty when the analysis is run as those folders will be populated throughout the analysis. However, 
+There are three main folders in this directory: `salary_data`, `gender_predictions`, and `gender_corpus`.
 
-**salary_data**:
+**`salary_data`**:
 
 Other than running the analysis, no additional work is needed to collect the UBC salary data. When the code is run it scrapes all salary data availible on this webpage: [https://finance.ubc.ca/reporting-planning-analysis/financial-reports](https://finance.ubc.ca/reporting-planning-analysis/financial-reports)
 
-**gender_predictions**:
+**`gender_predictions`**:
 
-This folder is populated when the analysis is run. 
+This folder is populated with predictions of people's genders when the analysis is run. 
 
-**gender_corpus**:
+**`gender_corpus`**:
 
-The gender corpus folder should have four files in it before the analysis is run. These files are babyname data files from various sources, used to train the gender classifier. 
+The `gender_corpus` folder should have four files in it before the analysis is run. These files are babyname data files from various sources, used to train the gender classifier. 
 
 This data should already in the `data/gender_corpus` folder but if it isn't it can be added by following these steps:
 
