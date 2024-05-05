@@ -76,6 +76,7 @@ To run the analysis in its entirety, enter the following command in the terminal
 docker-compose run --rm ubcsalaryimg make all
 ```
 
+Some instructions have been borrowed from [this repository](https://github.com/ttimbers/breast_cancer_predictor_py).
 
 ## Developer notes
 
@@ -106,6 +107,7 @@ docker compose run --rm terminal bash
 
 To exit the container type exit in the terminal.
 
+Some instructions have been borrowed from [this repository](https://github.com/ttimbers/breast_cancer_predictor_py)
 
 ## Key Skills Learned
 - Reproducibility in Data Science
