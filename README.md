@@ -11,6 +11,7 @@ The project involves several steps: gathering and cleaning salary data, making s
 - [Ethics](#ethics)
 - [Reprodicible Environment](#reprodicible-environment)
 - [Developer Notes](#developer-notes)
+- [Key Skills Learned](#key-skills-learned)
 - [Dependencies](#dependencies)
 - [License](#license)
 
