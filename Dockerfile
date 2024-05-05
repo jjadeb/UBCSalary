@@ -10,7 +10,6 @@ RUN conda install -y --channel conda-forge \
     nltk==3.8.1 \
     wordcloud==1.9.3 \
     sentence-transformers==2.2.2 \
-    jupyterlab==4.1.6 \
     yellowbrick==1.5 \
     make==4.3 \
     bs4==4.12.3 \
@@ -19,10 +18,6 @@ RUN conda install -y --channel conda-forge \
     ipython==8.22.2 \
     pypdf==4.2.0 \
     pytest==8.1.1 \
-    ipywidgets==8.1.2 \
     unidecode==1.3.8 \
     plotly==5.21.0 \
     seaborn==0.13.2
-
-# Specify the default command to run
-CMD ["jupyter", "lab", "--ip=0.0.0.0", "--no-browser"] 
