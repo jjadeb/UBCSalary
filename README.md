@@ -1,4 +1,4 @@
-# Visualizing UBC Salaries: Split by Gender, Department, and Job Title
+# Visualizing UBC Salaries Split by Gender
 
 The aim of this project is to create an exploratory analysis of The University of British Columbia (UBC) faculty salaries based on guessed gender. A secondary goal is to make sure my analysis is reproducible and auditable.
 
