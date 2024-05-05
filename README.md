@@ -2,21 +2,22 @@
 
 The aim of this project is to create an exploratory analysis of The University of British Columbia (UBC) faculty salaries based on guessed gender. A secondary goal is to make sure my analysis is reproducible and auditable.
 
-Located in the reports directory, there is a [notebook](reports/UBC_salary_analysis.ipynb) that contains a record of the original data wrangling steps of this project. This original analysis contained department and job title information of staff memebrs, and the final exploratory analysis is displayed as a [tableau dashboard](https://public.tableau.com/views/2023UBCSalariesJobTitleDepartmentandGuessedGender/Dashboard1?:language=en-US&:sid=&:display_count=n&:origin=viz_share_link). However, due to copyright the [department and job title data](https://www.directory.ubc.ca/index.cfm) and the scraping script used to obtain the data are not permitted to be published in this repository. Therefore, for the sake of reproducibility, I narrowed my scope to focus on the relationship between staff salaries and guessed genders of staff members.
+Located in the reports directory, there is a [notebook](reports/UBC_salary_analysis.ipynb) that contains a record of the original data wrangling steps of this project. This original analysis contained department and job title information of staff memebrs, and the final exploratory analysis is displayed as a [tableau dashboard](https://public.tableau.com/views/2023UBCSalariesJobTitleDepartmentandGuessedGender/Dashboard1?:language=en-US&:sid=&:display_count=n&:origin=viz_share_link). However, due to UBC's copyright, the [department and job title data](https://www.directory.ubc.ca/index.cfm) and the scraping script used to obtain the data are not permitted to be published in this repository. Therefore, for the sake of reproducibility, I narrowed my scope to focus on the relationship between staff salaries and guessed genders of staff members.
 
 To prioritize learning, rather than directly requesting salary data from UBC by department and gender, I will rely on the [annual PDF](https://finance.ubc.ca/reporting-planning-analysis/financial-reports) of salary data released by UBC, along with global baby name datasets. To learn more about the sources of the datasets, visit the [data](data) folder.
 
-The project involves several steps: gathering and cleaning salary data, making staff gender predictions using large babyname datasets, using a machine learning model to guess remaining genders, and ultimately visualizing the cleaned data.
+The project involves several steps: gathering and cleaning salary data, making staff gender predictions using large babyname datasets, using a machine learning model to guess remaining genders, and visualizing the cleaned data.
 
-This approach incorporates tasks such as scraping, clustering, and data transformation, offering an in-depth exploration of data manipulation techniques and fostering a comprehensive understanding of the intricacies involved in data wrangling.
+## Ethics
 
-# Ethics
+In this project first names are used to guess people's genders from the limited categories of "male" and "female". I acknowledge that gender identity is a spectrum and not limited to binary categories. Misgendering, or incorrectly assigning gender to individuals, can have harmful effects and perpetuate stereotypes. While first names can sometimes be an indication of someones gender, first names are not inherintly gendered. 
 
+I encourage anyone who notices a misgendering within this project to raise an issue in the issues tab, and it will be corrected. In addition, I encourage respectful and inclusive language in all discussions related to gender. 
+
+Please refer to the [Code of Conduct](CODE_OF_CONDUCT.md) for further details on the inclusive standards of this project. Your cooperation in fostering an inclusive environment is greatly appreciated.
 
 
 ## Running the Analysis in a Reprodicible Environment
-
-**IMPORTANT NOTE:** This analysis is not completely reproducible (see [Data](#data) for more details).
 
 There are two options for running my analysis in a reproducible environment. You can use the `environment.yml` file or use Docker. The `environment.yml` file is a lighter-weight option compared to Docker. 
 
