@@ -102,11 +102,11 @@ This data should already in the data folder but if it isn't it can be added by f
 
 Go to the following link: [https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710014701](https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710014701)
 Download the data with the largest time period possible (1991-2021 chosen for this analysis).
-Drop the csv data into the "data" folder and name it "17100147.csv".
+Drop the csv data into the "data" folder and name it "canadian_babyname.csv".
 
 Go to the following link: [https://www.kaggle.com/datasets/kaggle/us-baby-names/code](https://www.kaggle.com/datasets/kaggle/us-baby-names/code)
 Download the kaggle data.
-Drop the csv data into the "data" folder and name it "NationalNames.csv".
+Drop the csv data into the "data" folder and name it "american_babyname.csv".
 
 Go to the following link: [https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710014701](https://www.kaggle.com/datasets/ananysharma/indian-names-dataset)
 Download the data.
