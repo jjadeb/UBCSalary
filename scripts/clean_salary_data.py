@@ -10,8 +10,10 @@ import click
 import pandas as pd
 import re
 import pickle
+import warnings
 from unidecode import unidecode
 pd.options.mode.chained_assignment = None  # copy warnings are not an issue for this script
+warnings.simplefilter(action='ignore', category=FutureWarning) # ok to paste empty dataframe with non-empty one
 
 # Helper functions for cleaning data
 def take_subset_of_text(text, start_phrase, end_phrase):

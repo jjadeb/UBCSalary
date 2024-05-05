@@ -8,7 +8,7 @@
 ############# Running the project ##############
 
 # Run entire project
-all : data/gender_predictions/all_clean_gender_predictions.csv 
+all : plots
 
 # Run parts of the project
 salary-data : data/salary_data/clean_salary_data/all_clean_salary_data.csv
@@ -74,11 +74,20 @@ data/gender_predictions/nltk_gender_predictions.csv data/gender_predictions/corp
 	--corpus_gender_predictions_input=data/gender_predictions/corpus_gender_predictions.csv \
 	--all_gender_predictions_output=data/gender_predictions/all_clean_gender_predictions.csv
 
+############# Create plots ##############
+
+plots : scripts/exploratory_analysis.py data/gender_predictions/all_clean_gender_predictions.csv
+	mkdir -p plots/bar_plots
+	mkdir -p plots/box_plots
+	mkdir -p plots/histogram_plots
+	python scripts/exploratory_analysis.py \
+	--predictions_input_file=data/gender_predictions/all_clean_gender_predictions.csv \
+	--plot_output_folder=plots 
 
 ############# Remove intermediary files ##############
 
 clean :
-	-rm -r data/salary_data/clean_salary_data
+	-rm -r data/salary_data/clean_salary_data plots/bar_plots plots/box_plots plots/histogram_plots
 	-rm -f data/gender_predictions/corpus_gender_predictions.csv \
 	data/gender_predictions/needs_gender_predictions.csv \
 	models/gender_classifier.pickle \

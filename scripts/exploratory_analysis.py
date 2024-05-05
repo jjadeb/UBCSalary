@@ -3,7 +3,7 @@
 #
 # This script creates plots for the salary and gender data 
 #
-# Usage: python scripts/exploratory_analysis.py
+# Usage: python scripts/exploratory_analysis.py --predictions_input_file=data/gender_predictions/all_clean_gender_predictions.csv --plot_output_folder=plots 
 
 
 import pandas as pd
@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 from math import log10
 import numpy as np
 import seaborn as sns
+import click
+
 plt.rcParams.update({'font.size': 14, 'font.family': 'sans-serif'})
 sns.set_theme(rc={'figure.figsize':(10,4)},font = "sans-serif")
 pd.options.mode.chained_assignment = None  # copy warnings are not an issue for this script
@@ -27,7 +29,7 @@ def prepare_data_for_plot(data, year, salary_col, first_name_col, last_name_col,
 
 
 def create_top_ten_bar_plot(data, numeric_column_name, categorical_column_name, colour_bar_column_name, colour_bar_opt1,
-                            colour_bar_opt2, file_name, plot_title, x_axis_lab, y_axis_lab):
+                            colour_bar_opt2, file_name, plot_title, x_axis_lab, y_axis_lab,plot_output_folder):
     # Sort the data by remuneration in descending order and select the top ten rows
     top_ten_data = data.nlargest(10, numeric_column_name)
 
@@ -70,7 +72,7 @@ def create_top_ten_bar_plot(data, numeric_column_name, categorical_column_name, 
     plt.grid(False)
 
     plt.tight_layout()
-    plt.savefig(f'plots/bar_plots/top_ten_{file_name}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'{plot_output_folder}/bar_plots/top_ten_{file_name}.png', dpi=300, bbox_inches='tight')
     plt.close()
 
 
@@ -79,7 +81,7 @@ def create_top_ten_bar_plots_for_all_years():
     pass
 
 def create_histogram_plot_for_one_year(data, min_value, max_value, numeric_col, category_col,
-                                       plot_title, xlab, ylab, file_name, cut_off_factor, bins):
+                                       plot_title, xlab, ylab, file_name, cut_off_factor, bins, plot_output_folder):
 
     # Define bins
     bins = np.linspace(min_value, round(max_value), bins)
@@ -105,7 +107,7 @@ def create_histogram_plot_for_one_year(data, min_value, max_value, numeric_col, 
     plt.gca().spines['right'].set_visible(False)
 
     plt.grid(True)
-    plt.savefig(f'plots/histogram_plots/histogram_of_{file_name}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'{plot_output_folder}/histogram_plots/histogram_of_{file_name}.png', dpi=300, bbox_inches='tight')
     plt.close()
 
 def create_summary_table(data, numeric_col1, numeric_col2):
@@ -124,7 +126,7 @@ def create_summary_table(data, numeric_col1, numeric_col2):
     return data_summary, min_col1, max_col1, min_col2, max_col2
 
 
-def create_box_plots(data, numeric_col, categorical_col, xlab, ylab, title, file_name):
+def create_box_plots(data, numeric_col, categorical_col, xlab, ylab, title, file_name,plot_output_folder):
 
     plt.figure(figsize=(9, 5))
     sns.boxplot(
@@ -138,14 +140,16 @@ def create_box_plots(data, numeric_col, categorical_col, xlab, ylab, title, file
     plt.xlabel(xlab , fontsize=14)
     plt.ylabel(ylab, fontsize=14)
     plt.title(title , fontsize=16)
-    plt.savefig(f'plots/box_plots/boxplot_of_{file_name}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'{plot_output_folder}/box_plots/boxplot_of_{file_name}.png', dpi=300, bbox_inches='tight')
     plt.close()
 
 
-
-def main():
+@click.command
+@click.option("--predictions_input_file",type=str)
+@click.option("--plot_output_folder",type=str)
+def main(predictions_input_file, plot_output_folder):
     ## read in data
-    data = pd.read_csv('data/gender_predictions/all_clean_gender_predictions.csv')
+    data = pd.read_csv(predictions_input_file)
   
 
     ## for each year create a bar plot of the top ten salaries and box plots of salaries and expenses
@@ -161,36 +165,36 @@ def main():
         # create top ten bar plots for salaries
         create_top_ten_bar_plot(processed_data, 'Remuneration', 'Name', 'Sex_at_birth', 'Female',
                                 'Male', f'salaries_{year}', f'Top Ten Salaries in {year}', 
-                                'Name', 'Salary (CAD, in thousands)')
+                                'Name', 'Salary (CAD, in thousands)', plot_output_folder)
         
         # create top ten bar plots for expenses
         create_top_ten_bar_plot(processed_data, 'Expenses', 'Name', 'Sex_at_birth', 'Female',
                                 'Male', f'expenses_{year}', f'Top Ten Expenses in {year}', 
-                                'Name', 'Expenses (CAD)')
+                                'Name', 'Expenses (CAD)', plot_output_folder)
         
         # create histogram for salaries split by gender
         create_histogram_plot_for_one_year(processed_data, min_remuneration, max_remuneration, 
                                            'Remuneration', 'Sex_at_birth', 
                                            f'Distribution of Salary by Gender {year}', 
                                            'Salary (CAD, in thousands)', 'Frequency', 
-                                           f'salaries_by_gender_{year}',0.5,100)
+                                           f'salaries_by_gender_{year}',0.5,100,plot_output_folder)
         
         # create histogram for expenses split by gender
         create_histogram_plot_for_one_year(processed_data, min_expenses, max_expenses, 
                                            'Expenses', 'Sex_at_birth', 
                                            f'Distribution of Expenses by Gender {year}', 
                                            'Expenses (CAD)', 'Frequency', 
-                                           f'expenses_by_gender_{year}',0.2,200)
+                                           f'expenses_by_gender_{year}',0.2,200,plot_output_folder)
         
         # create box plots for salary split by gender
         create_box_plots(processed_data, 'Remuneration', 'Sex_at_birth', "\nSalary (CAD, in thousands)", 
                          "Guessed Gender", f"Salary Distribution by Gender in {year} \n", 
-                         f'salary_by_gender_{year}')
+                         f'salary_by_gender_{year}',plot_output_folder)
         
         # create box plots for expenses split by gender
         create_box_plots(processed_data, 'Expenses', 'Sex_at_birth', "\nExpenses (CAD)", 
                          "Guessed Gender", f"Expenses Distribution by Gender in {year} \n", 
-                         f'expenses_by_gender_{year}')
+                         f'expenses_by_gender_{year}',plot_output_folder)
 
 
 
