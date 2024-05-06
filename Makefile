@@ -80,6 +80,7 @@ plots : scripts/exploratory_analysis.py data/gender_predictions/all_clean_gender
 	mkdir -p plots/bar_plots
 	mkdir -p plots/box_plots
 	mkdir -p plots/histogram_plots
+	mkdir -p plots/line_plots
 	python scripts/exploratory_analysis.py \
 	--predictions_input_file=data/gender_predictions/all_clean_gender_predictions.csv \
 	--plot_output_folder=plots 
@@ -87,7 +88,8 @@ plots : scripts/exploratory_analysis.py data/gender_predictions/all_clean_gender
 ############# Remove intermediary files ##############
 
 clean :
-	-rm -r data/salary_data/clean_salary_data plots/bar_plots plots/box_plots plots/histogram_plots
+	-rm -r data/salary_data/clean_salary_data plots/bar_plots plots/box_plots \
+	plots/histogram_plots plots/line_plots
 	-rm -f data/gender_predictions/corpus_gender_predictions.csv \
 	data/gender_predictions/needs_gender_predictions.csv \
 	models/gender_classifier.pickle \
