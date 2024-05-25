@@ -18,7 +18,7 @@ The project involves several steps: gathering and cleaning salary data, making s
 
 ## Project History 
 
-The final phase of this project, a report detailing the analysis, is a work in progress. For now, you can see the plots created for the analysis in the [plots directory](plots). 
+The final phase of this project, a report detailing the analysis, is a work in progress. For now, you can see the plots created for the analysis in the [plots folder](plots). 
 
 The most up-to-date analysis code is located in the [scripts](scripts) folder.
 
