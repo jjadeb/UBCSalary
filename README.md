@@ -107,7 +107,7 @@ You should now see the Jupyter lab IDE in your browser, with all the project fil
 To shut down the container and clean up the resources, type Cntrl + C in the terminal where you launched the container, and then type
 
 ```{bash}
-docker compose rm
+docker-compose rm
 ```
 Some instructions have been borrowed from [this repository](https://github.com/ttimbers/breast_cancer_predictor_py)
 
