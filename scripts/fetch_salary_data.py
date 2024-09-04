@@ -54,7 +54,7 @@ def find_yearly_links(webpage, start_header, end_header):
     # use BeautifulSoup to parse through the webpage elements
     soup = BeautifulSoup(r.content, 'html.parser')
     # find the the starting header
-    finance_section = soup.find('h3', string = re.compile(start_header))
+    finance_section = soup.find('h3', string = start_header)
     # find the elements under the header with links
     for sibling in finance_section.find_next_siblings(): # iterate through element siblings until end header is encoutnered
         for link in sibling.find_all('a'): # search through 'a' elements to find links
@@ -117,8 +117,8 @@ def main(raw_salary_data_file):
     
     # Fetch links to all available Financial Act reports
     links = find_yearly_links('https://finance.ubc.ca/reporting-planning-analysis/financial-reports',
-                                                'Financial Information Act',
-                                                "Task Force on Climate-Related Disclosures Report")
+                                                'Statement of Financial Information (SOFI)',
+                                                "Fighting Against Forced Labour and Child Labour in Supply Chains Report")
     
     # Create an empty dictionary to store the raw salary text data
     raw_salary_dictionary = {}
