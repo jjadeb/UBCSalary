@@ -1,0 +1,68 @@
+---
+project:
+  type: website
+  output-dir: docs
+title: "UBC Salaries: Exploratory Analysis of Gender"
+author: "Jade Bouchard"
+format: 
+    html: 
+        toc: true
+        toc-depth: 2
+    pdf: 
+        toc: true
+        toc-depth: 2
+bibliography: references.bib
+execute: 
+    echo: false
+    warning: false
+editor: source
+---
+
+```{python}
+import pandas as pd
+from IPython.display import Markdown, display
+from tabulate import tabulate
+```
+
+
+## Aim
+
+This document explores The University of British Columbia (UBC) faculty salaries based on guessed gender. 
+
+## Data
+
+Salary data was sourced from [@salary_data]. To access individual financial reports, click on the yearly links under the header `Statement of Financial Information (SOFI)`.
+
+Gender data was inferred using first names of staff members. In order to guess gender, I used baby name datasets [@canadian_babyname, @american_babyname, @indian_babyname].
+
+
+## Methods
+
+The Python programming language [@Python] was used to perform this analysis.
+
+### Data collection
+
+As mentioned earlier, for UBC salary data, I used the PDF salary information that UBC releases every year [@salary_data]. The data collection code performs the following tasks:
+
+
+    - Loads salary data that has already been collected as a dictionary from a pickle file. The key for this dictionary is the fiscal year and the value is a string of salary data
+    - Uses `requests` to accesses the UBC Financial Reports webpage.
+    - Extracts links to annual salary PDFs by locating the "Statement of Financial Information (SOFI)" section on the [webpage](https://finance.ubc.ca/reporting-planning-analysis/reports-and-disclosures) and parsing the links.
+    - Uses the link url to map the fiscal year to the corresponding report link.
+    - If there are any links (and associated PDFs) for which we have not already collected salary data, the code will extract the text from the PDF using the package `pypdf`.
+    - Any new data is added to the salary data dictionary and saved as a pickle file.
+
+### Data cleaning
+
+- Clean and Transform Data:
+    - Removes unnecessary content
+    - Uses regex to process the raw text data into a structured DataFrame
+    - Splits names into first and last names. 
+    - Converts salary values to a numeric data type.
+    
+
+## Results
+
+
+
+## References
