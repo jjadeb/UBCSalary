@@ -8,7 +8,7 @@
 ############# Running the project ##############
 
 # Run entire project
-all : plots
+all : plots reports/qmd_example.pdf
 
 # Run parts of the project
 salary-data : data/salary_data/clean_salary_data/all_clean_salary_data.csv
@@ -85,6 +85,11 @@ plots : scripts/exploratory_analysis.py data/gender_predictions/all_clean_gender
 	--predictions_input_file=data/gender_predictions/all_clean_gender_predictions.csv \
 	--plot_output_folder=plots 
 
+############## Create report ##############
+
+reports/qmd_example.pdf: plots reports/UBC_salary_report.qmd
+	quarto render reports/UBC_salary_report.qmd --to pdf
+
 ############# Remove intermediary files ##############
 
 clean :
@@ -98,3 +103,4 @@ clean :
 	data/gender_predictions/nltk_gender_predictions.csv \
 	data/gender_predictions/all_clean_gender_predictions.csv \
 	data/gender_corpus/clean_name_corpus.csv
+	-rm reports/qmd_example.pdf
