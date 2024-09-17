@@ -56,7 +56,7 @@ scripts/nltk_train_gender_classifier.py data/gender_corpus/clean_name_corpus.csv
 	--model_output_folder=models \
 	--data_output_folder=data/gender_predictions
 
-# make gender predictions using nltk model
+# make gender predictions using model
 data/gender_predictions/nltk_gender_predictions.csv : scripts/nltk_make_predictions.py \
 models/gender_classifier.pickle data/gender_predictions/nltk_test_data.pickle \
 data/gender_predictions/needs_gender_predictions.csv
