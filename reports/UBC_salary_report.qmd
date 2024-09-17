@@ -85,9 +85,21 @@ clean_salary_data.head()
 
 ## Gender Prediction 
 
-
 ### Babyname Corpus
+In order to predict gender, I used datasets with babynames and assigned genders. In order to have a somewhat diverse set of baby names, I used babynames from canadian, american, and indian sources [@canadian_babyname, @american_babyname, @indian_babyname].
 
+For each UBC staff name, I found whether that name was more common among girls or boys in the babyname dataset. Then, I guessed the gender that was most common. Any staff names that had less than an 80% gender majority were given a null gender.
+
+```{python}
+#| label: tbl-babynames
+#| tbl-cap: Babyname Data
+clean_babynames = pd.read_csv("../data/gender_corpus/clean_name_corpus.csv")
+low_accuracy_df = clean_babynames.sort_values(by="Accuracy").head(1)
+low_accuracy_name = low_accuracy_df.iloc[0]["First_Name"]
+low_accuracy_df
+```
+
+In @tbl-babynames, the accuracy column shows the percentage of gender majority from the babyname dataset. We can see the name `{python} low_accuracy_name` has about the same number of boy and girl names. So, anyone with that name would have a gender value of `None` assigned.
 
 ### NLTK
 
