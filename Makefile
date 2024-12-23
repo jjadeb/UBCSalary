@@ -87,7 +87,11 @@ plots : scripts/exploratory_analysis.py data/gender_predictions/all_clean_gender
 
 ############## Create report ##############
 
-reports/qmd_example.pdf: plots reports/UBC_salary_report.qmd
+reports/qmd_example.pdf: plots reports/UBC_salary_report.qmd \
+data/gender_predictions/corpus_gender_predictions.csv \
+data/gender_predictions/needs_gender_predictions.csv \
+data/salary_data/clean_salary_data/all_clean_salary_data.csv \
+data/gender_corpus/clean_name_corpus.csv
 	quarto render reports/UBC_salary_report.qmd --to pdf
 
 ############# Remove intermediary files ##############
