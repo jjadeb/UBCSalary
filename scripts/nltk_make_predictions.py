@@ -20,7 +20,9 @@ import nltk
 @click.option('--nltk_test_data',type=str)
 @click.option('--needs_predictions_file_path',type=str)
 @click.option('--nltk_predictions_output_path',type=str)
-def main(model_path,nltk_test_data,needs_predictions_file_path,nltk_predictions_output_path):
+@click.option('--accuracy_output_path',type=str)
+def main(model_path,nltk_test_data,needs_predictions_file_path,nltk_predictions_output_path, 
+         accuracy_output_path):
 
     ################ read in the model and the data ################
 
@@ -37,6 +39,8 @@ def main(model_path,nltk_test_data,needs_predictions_file_path,nltk_predictions_
 
     # calculating the accuracy of the model on the test set
     accuracy = round(nltk.classify.accuracy(classifier, test_set),2)
+    with open(accuracy_output_path, 'w') as file:
+        file.write(str(accuracy))
 
     ######### collect features for each name in our UBC data that still needs a sex assigned ########
 
@@ -57,7 +61,7 @@ def main(model_path,nltk_test_data,needs_predictions_file_path,nltk_predictions_
     # For the accuracy column, I am using the predict proba score given by the classifier
     # multiplied by the accuracy score on the test set
     # The predict proba score represents the uncertainty of the model between the two sexes
-    needs_predictions_df.loc[:,'Accuracy'] = [max(i.prob('Male'),i.prob('Female'))*accuracy for i in classifier.prob_classify_many(list_of_features)]
+    needs_predictions_df.loc[:,'Estimated_Accuracy'] = [round(max(i.prob('Male'),i.prob('Female'))*accuracy,2) for i in classifier.prob_classify_many(list_of_features)]
 
     ################ save the predictions ################
     # saving the nltk predictions
