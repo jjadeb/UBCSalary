@@ -96,21 +96,21 @@ clean_salary_data.head()
 ### Babyname Corpus
 In order to predict gender, I used datasets with babynames and assigned genders. In order to have a somewhat diverse set of baby names, I used babynames from Canadian, American, and Indian sources [@canadian_babyname, @american_babyname, @indian_babyname].
 
-For each UBC staff name, I found whether that name was more common among girls or boys in the babyname dataset. Then, I guessed the gender that was most common.
+For each UBC staff name, I found whether that name was more common among girls or boys in the babyname corpus. Then, I guessed the gender that was most common.
 
-In @tbl-babynames, the `Accuracy` column shows the percentage of gender majority from the babyname dataset. For example, if 95% of babys named George in the dataset were male, the `Accuracy` column value would be 0.95. Any staff names that had less than an 80% gender majority were given a null gender.
+In @tbl-babynames, the `Estimated_Accuracy` column shows the percentage of gender majority from the babyname corpus. For example, if 95% of babys named George in the dataset were male, the `Estimated_Accuracy` column value would be 0.95. Any staff names that had less than an 80% gender majority were given a null gender.
 
 ```{python}
 #| label: tbl-babynames
 #| tbl-cap: Babyname Data
 clean_babynames = pd.read_csv("../data/gender_corpus/clean_name_corpus.csv")
-low_accuracy_df = clean_babynames.sort_values(by="Accuracy").head(1)
+low_accuracy_df = clean_babynames.sort_values(by="Estimated_Accuracy").head(1)
 low_accuracy_name = low_accuracy_df.iloc[0]["First_Name"]
-low_accuracy_value = low_accuracy_df.iloc[0]["Accuracy"]
+low_accuracy_value = low_accuracy_df.iloc[0]["Estimated_Accuracy"]
 low_accuracy_df
 ```
 
-We can see the name `{python} low_accuracy_name` has about the same number of boy and girl names. This name has an accuracy of `{python} low_accuracy_value`. So, since its not above the 80% threshold, anyone with that name would have a gender value of `None` assigned.
+@tbl-babynames shows the name `{python} low_accuracy_name` has about the same number of boy and girl names. This name has an accuracy of `{python} low_accuracy_value`. So, since its not above the 80% threshold, anyone with that name would have a gender value of `None` assigned.
 
 ```{python}
 corpus_predictions = pd.read_csv("../data/gender_predictions/corpus_gender_predictions.csv")
@@ -118,22 +118,85 @@ non_corpus_data = pd.read_csv("../data/gender_predictions/needs_gender_predictio
 matched_percentage = round(100*corpus_predictions.shape[0]/(corpus_predictions.shape[0] + non_corpus_data.shape[0]),2)
 ```
 
-Around `{python} matched_percentage`% of UBC staff names were able to be matched with names in the babyname dataset.
+@tbl-corpuspreds shows some of the predictions made on UBC staff members using the babyname corpus.
+```{python}
+#| label: tbl-corpuspreds
+#| tbl-cap: Babyname Data
+corpus_predictions = pd.read_csv("../data/gender_predictions/corpus_gender_predictions.csv")
+corpus_predictions_accurate = corpus_predictions[corpus_predictions["Estimated_Accuracy"] >= 0.8]
+corpus_predictions_accurate[["First_Name","Sex_at_birth","Estimated_Accuracy"]].head(5)
+```
+
+```{python}
+corpus_predictions = pd.read_csv("../data/gender_predictions/corpus_gender_predictions.csv")
+corpus_predictions_accurate = corpus_predictions[corpus_predictions["Estimated_Accuracy"] >= 0.8]
+corpus_accurate_value = round(corpus_predictions_accurate.shape[0]*100/corpus_predictions.shape[0],1)
+```
+
+Around `{python} matched_percentage`% of UBC staff names were matched with names in the babyname corpus. `{python} corpus_accurate_value`% of the corpus matches had over 0.8 accuracy and were kept, the rest were given a prediction of `None`.
 
 ### NLTK
 
-For UBC staff names that were not found in the babyname datasets, I used a natural language processing model (package: `nltk`) to predict gender. 
+For UBC staff names that were not found in the babyname corpus, I used a natural language processing model to predict genders [@NLTK]. 
 
-Below are some examples of names not found in the babyname dataset.
+@tbl-needspreds shows some examples of names not found in the babyname corpus.
 
 ```{python}
+#| label: tbl-needspreds
+#| tbl-cap: Example Staff Names Not Found in Babyname Datasets
 nltk_predictions_needed = pd.read_csv("../data/gender_predictions/needs_gender_predictions.csv")
-nltk_predictions_needed.head(5)["First_Name"]
+pd.DataFrame(nltk_predictions_needed.head(5)["First_Name"])
 ```
 
-In order to train and evaluate the model, the babyname dataset was split into a trianing and test set. The accuracy on the test set was `0.85`. However, the accuracy on the actual data is likely lower than `0.85` since the actual data contains more unique, unusual names that were not found in our babyname dataset. 
 
-The two features the classifier found most useful were the last 3 letters and last 4 letters of a name.
+In order to train and evaluate the model, the babyname corpus was split into a trianing and test set.
+
+Features used to train the Naive Bayes model were the last 2, 3, and 4 letters of the staff member's first name. 
+
+```{python}
+ with open("../data/gender_predictions/accuracy.txt", "r") as file:
+    accuracy = float(file.read())
+```
+
+ The accuracy on the test set was `{python} accuracy`. However, the accuracy on our UBC staff data is very likely lower than `{python} accuracy` since the UBC staff names that still need predictions are unique and unusual enough that were not found in our babyname corpus. 
+
+ Below are the top three features the classifier found most useful for making correct predictions.
+
+```{python}
+ with open("../models/gender_classifier.pickle", "rb") as model_file:
+    classifier = pickle.load(model_file)
+    classifier.show_most_informative_features(n=3)
+```
+
+We can see there are patterns in first names that could be helpful for predicting gender. However, these patterns may not show up often in the unique UBC staff that were not in the babyname datasets.
+
+Finally, after making predictions on the UBC staff data, we can see in @tbl-worstnltkpreds the predictions our classifier was least confident about, and in @tbl-bestnltkpreds and the predictions it was most confident about. 
+
+```{python}
+#| label: tbl-worstnltkpreds
+#| tbl-cap: Least Confident NLTK predictions
+nltk_predictions = pd.read_csv("../data/gender_predictions/nltk_gender_predictions.csv")
+nltk_predictions.sort_values(by="Estimated_Accuracy", ascending=True)[["First_Name", "Sex_at_birth","Estimated_Accuracy"]].drop_duplicates().head(5)
+```
+
+```{python}
+#| label: tbl-bestnltkpreds
+#| tbl-cap: Most Confident NLTK predictions
+nltk_predictions = pd.read_csv("../data/gender_predictions/nltk_gender_predictions.csv")
+nltk_predictions.sort_values(by="Estimated_Accuracy", ascending=False)[["First_Name", "Sex_at_birth","Estimated_Accuracy"]].drop_duplicates().head(5)
+```
+
+To represent the extra uncertainty in using a classifier compared to the babyname corpus, the `Estimated_Accuracy` column for NLTK predictions is the classifier's predict-proba score multplied by `{python} accuracy`. Where `{python} accuracy` is the accuracy of the classifier on the test set.
+
+Like with the babyname corpus predictions, NLTK predictions with an accuracy less than 0.8 were given a gender prediction of `None`. This was the case if the predict-proba score from the classifier was less than `{python} round(0.8/accuracy,2)`.
+
+```{python}
+nltk_predictions = pd.read_csv("../data/gender_predictions/nltk_gender_predictions.csv")
+accurate_nltk_predictions = nltk_predictions[nltk_predictions['Estimated_Accuracy'] >= 0.8]
+nltk_kept_preds = round(100*accurate_nltk_predictions.shape[0]/(nltk_predictions.shape[0]),1)
+```
+
+Overall, `{python} nltk_kept_preds`% of the NLTK predictions were kept and the rest were given a prediction of `None`.
 
 ## Exploratory Data Analysis
 
@@ -142,8 +205,12 @@ The two features the classifier found most useful were the last 3 letters and la
 
 **Due to the low level of accuracy in gender predicion of this report, conlusions drawn are not meaningful.**
 
-- nltk training data not representative of real data
+- NLTK training data not representative of real data
 - no practical way to check ground truths
+- data sources
+- gender not binary
+- Naive Bayes conditional independence assumption violated
+  These features are correlated which violates the Naive Bayes conditional independence assumption. However, I decided to stick with the NLTK naive bayes classifier as it efficiently handles text data, large datasets, and still performs fairly well.
 - etc.
 
 ## References

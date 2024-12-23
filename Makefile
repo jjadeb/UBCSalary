@@ -64,7 +64,8 @@ data/gender_predictions/needs_gender_predictions.csv
 	--model_path=models/gender_classifier.pickle \
 	--nltk_test_data=data/gender_predictions/nltk_test_data.pickle \
 	--needs_predictions_file_path=data/gender_predictions/needs_gender_predictions.csv \
-	--nltk_predictions_output_path=data/gender_predictions/nltk_gender_predictions.csv
+	--nltk_predictions_output_path=data/gender_predictions/nltk_gender_predictions.csv \
+	--accuracy_output_path=data/gender_predictions/accuracy.txt
 
 # combine and clean all gender predictions
 data/gender_predictions/all_clean_gender_predictions.csv : scripts/combine_and_clean_predictions.py \
@@ -106,5 +107,6 @@ clean :
 	data/gender_predictions/nltk_training_data.pickle \
 	data/gender_predictions/nltk_gender_predictions.csv \
 	data/gender_predictions/all_clean_gender_predictions.csv \
+	data/gender_predictions/accuracy.txt \
 	data/gender_corpus/clean_name_corpus.csv
 	-rm reports/qmd_example.pdf
