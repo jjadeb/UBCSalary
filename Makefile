@@ -109,4 +109,3 @@ clean :
 	data/gender_predictions/all_clean_gender_predictions.csv \
 	data/gender_predictions/accuracy.txt \
 	data/gender_corpus/clean_name_corpus.csv
-	-rm reports/qmd_example.pdf
