@@ -42,9 +42,6 @@ In this project first names are used to guess whether someone is "male" or "fema
 
 I encourage anyone who notices a misgendering within this project to raise an issue in the issues tab, and it will be corrected. In addition, I encourage respectful and inclusive language in all discussions related to gender. 
 
-**Due to the low level of accuracy in gender predicion of this report, any conlusions drawn are not meaningful.**
-
-
 ## Methods
 
 The Python programming language [@Python] was used to perform this analysis.
