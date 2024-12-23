@@ -155,7 +155,7 @@ Features used to train the Naive Bayes model were the last 2, 3, and 4 letters o
     accuracy = float(file.read())
 ```
 
- The accuracy on the test set was `{python} accuracy`. However, the accuracy on our UBC staff data is very likely lower than `{python} accuracy` since the UBC staff names that still need predictions are unique and unusual enough that were not found in our babyname corpus. 
+ The accuracy on the test set was `{python} accuracy`. However, the accuracy on the UBC staff names that were missing from the babyname corpus is very likely lower than `{python} accuracy`. This is due to the fact that the data we are making predictions on is quite different from our training data.
 
  Below are the top three features the classifier found most useful for making correct predictions.
 
