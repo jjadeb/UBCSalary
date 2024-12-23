@@ -1,0 +1,142 @@
+---
+project:
+  type: website
+  output-dir: docs
+title: "UBC Salaries: Exploratory Analysis of Gender"
+author: "Jade Bouchard"
+format: 
+    html: 
+        toc: true
+        toc-depth: 2
+    pdf: 
+        toc: true
+        toc-depth: 2
+bibliography: references.bib
+execute: 
+    echo: false
+    warning: false
+editor: source
+---
+
+```{python}
+import pandas as pd
+import pickle
+from IPython.display import Markdown, display
+from tabulate import tabulate
+```
+
+
+## Aim
+
+This document explores The University of British Columbia (UBC) faculty salaries based on guessed gender. 
+
+## Data
+
+Salary data was sourced from [@salary_data]. To access individual financial reports, click on the yearly links under the header `Statement of Financial Information (SOFI)`.
+
+Gender data was inferred using first names of staff members. In order to guess gender, I used baby name datasets [@canadian_babyname, @american_babyname, @indian_babyname].
+
+## Ethics
+
+In this project first names are used to guess whether someone is "male" or "female". I acknowledge that gender identity is a spectrum and not limited to binary categories. Misgendering, or incorrectly assigning gender to individuals, can have harmful effects. While first names can sometimes be an indication of someones gender, first names are not inherintly gendered. 
+
+I encourage anyone who notices a misgendering within this project to raise an issue in the issues tab, and it will be corrected. In addition, I encourage respectful and inclusive language in all discussions related to gender. 
+
+**Due to the low level of accuracy in gender predicion of this report, conlusions drawn are not meaningful.**
+
+
+## Methods
+
+The Python programming language [@Python] was used to perform this analysis.
+
+## Data collection
+
+As mentioned earlier, for UBC salary data, I used the PDF salary information that UBC releases every year [@salary_data]. The following steps were taken to collect the data.
+
+- Use the `requests` package to accesses the UBC Financial Reports [webpage](https://finance.ubc.ca/reporting-planning-analysis/reports-and-disclosures).
+- Extract links to annual salary PDFs by locating the "Statement of Financial Information (SOFI)" section on the webpage and parsing the links.
+- If there are any links (and associated PDFs) for which we have not already collected salary data, extract the text from the PDF using the package `pypdf`.
+- Open the stored salary data dictionary
+- Add the new salary text data to the salary data dictionary
+
+The code does not necissarily follow the order of steps described above.
+
+An exerpt of the raw salary data is below.
+
+```{python}
+  with open("../data/salary_data/raw_salary_data.pickle", "rb") as raw_salary_dict:
+        raw_salary_text_data = pickle.load(raw_salary_dict)
+
+print(raw_salary_text_data["2020"][200210:200300])
+```
+
+
+### Data cleaning
+
+In this section, the following steps are taken to clean the salary data:
+
+- Remove special charachters from text. For example, ş.
+- Removes unnecessary text content. For example, the "[Auditor's] Qualified Opinion".
+- Uses regex to process the raw text data into a structured DataFrame with columns: `Name`, `Remuneration`, `Expenses`.
+- Splits the `Name` column into first and last names. 
+- Converts salary values to a numeric data type.
+- Shortens first and last name to allow for easier name matching between years. For example, someone's name in 2020 could be "Bob M Sherbert" and in 2021 their name could be "Bob-M Sherbert". This name would be shortened to Bob Sherbert to avoid mismatching.
+- Concatenate dataframes from all years together.
+
+@tbl-cleandata shows an expert of the cleaned salary data.
+```{python}
+#| label: tbl-cleandata
+#| tbl-cap: Clean UBC Salary Data
+clean_salary_data = pd.read_csv("../data/salary_data/clean_salary_data/all_clean_salary_data.csv")
+clean_salary_data.head()
+```
+
+## Gender Prediction 
+
+### Babyname Corpus
+In order to predict gender, I used datasets with babynames and assigned genders. In order to have a somewhat diverse set of baby names, I used babynames from canadian, american, and indian sources [@canadian_babyname, @american_babyname, @indian_babyname].
+
+For each UBC staff name, I found whether that name was more common among girls or boys in the babyname dataset. Then, I guessed the gender that was most common.
+
+In @tbl-babynames, the `Accuracy` column shows the percentage of gender majority from the babyname dataset. For example, if 95% of babys named George in the dataset were male, the `Accuracy` column value would be 0.95. Any staff names that had less than an 80% gender majority were given a null gender.
+
+```{python}
+#| label: tbl-babynames
+#| tbl-cap: Babyname Data
+clean_babynames = pd.read_csv("../data/gender_corpus/clean_name_corpus.csv")
+low_accuracy_df = clean_babynames.sort_values(by="Accuracy").head(1)
+low_accuracy_name = low_accuracy_df.iloc[0]["First_Name"]
+low_accuracy_df
+```
+
+We can see the name `{python} low_accuracy_name` has about the same number of boy and girl names. So, since its not above the 80% threshold, anyone with that name would have a gender value of `None` assigned.
+
+Around 92% of UBC staff names were able to be matched with names in the babyname dataset.
+
+### NLTK
+
+For UBC staff names that were not found in the babyname datasets, I used a natural language processing model (package: `nltk`) to predict gender. 
+
+Below are some examples of names not found in the babyname dataset.
+
+```{python}
+nltk_predictions_needed = pd.read_csv("../data/gender_predictions/needs_gender_predictions.csv")
+nltk_predictions_needed.head(5)["First_Name"]
+```
+
+In order to train and evaluate the model, the babyname dataset was split into a trianing and test set. The accuracy on the test set was `0.85`. However, the accuracy on the actual data is likely lower than `0.85` since the actual data contains more unique, unusual names that were not found in our babyname dataset. 
+
+The two features the classifier found most useful were the last 3 letters and last 4 letters of a name.
+
+## Exploratory Data Analysis
+
+
+## Limitations
+
+**Due to the low level of accuracy in gender predicion of this report, conlusions drawn are not meaningful.**
+
+- nltk training data not representative of real data
+- no practical way to check ground truths
+- etc.
+
+## References

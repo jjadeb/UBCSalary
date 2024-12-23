@@ -8,7 +8,7 @@
 ############# Running the project ##############
 
 # Run entire project
-all : plots
+all : plots reports/qmd_example.pdf
 
 # Run parts of the project
 salary-data : data/salary_data/clean_salary_data/all_clean_salary_data.csv
@@ -56,7 +56,7 @@ scripts/nltk_train_gender_classifier.py data/gender_corpus/clean_name_corpus.csv
 	--model_output_folder=models \
 	--data_output_folder=data/gender_predictions
 
-# make gender predictions using nltk model
+# make gender predictions using model
 data/gender_predictions/nltk_gender_predictions.csv : scripts/nltk_make_predictions.py \
 models/gender_classifier.pickle data/gender_predictions/nltk_test_data.pickle \
 data/gender_predictions/needs_gender_predictions.csv
@@ -85,6 +85,11 @@ plots : scripts/exploratory_analysis.py data/gender_predictions/all_clean_gender
 	--predictions_input_file=data/gender_predictions/all_clean_gender_predictions.csv \
 	--plot_output_folder=plots 
 
+############## Create report ##############
+
+reports/qmd_example.pdf: plots reports/UBC_salary_report.qmd
+	quarto render reports/UBC_salary_report.qmd --to pdf
+
 ############# Remove intermediary files ##############
 
 clean :
@@ -98,3 +103,4 @@ clean :
 	data/gender_predictions/nltk_gender_predictions.csv \
 	data/gender_predictions/all_clean_gender_predictions.csv \
 	data/gender_corpus/clean_name_corpus.csv
+	-rm reports/qmd_example.pdf
