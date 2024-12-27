@@ -237,7 +237,7 @@ histogram_path = f"../plots/histogram_plots/histogram_of_salaries_by_gender_{mos
 
 ![Salary Line Plot](../plots/line_plots/lineplot_of_median_salary_by_gender.png){#fig-line}
 
-@fig-line shows a line plot of median UBC staff salaries over all the years I have collected data. There seems to be fairly minimal change in median salary between 2020 and 2023, and then an increase in median salary in 2024. Males have a higher median salary for years 2020 to 2024.
+@fig-line shows a line plot of median UBC staff salaries over all the years I have collected data. There seems to be fairly minimal change in median salary between 2020 and 2023, and then an increase in median salary in 2024. Males have a higher median salary for (at least) years 2020 to 2024.
 
 ![Salary Change Line Plot](../plots/line_plots/lineplot_of_median_salary_percent_change_by_gender.png){#fig-linechange}
 
@@ -247,24 +247,18 @@ There seems to be a slight decrease median raise percentage between 2020 and 202
 
 ## Limitations
 
-There are many limitations to this exploratory analysis.
+One of the plots showed males having a higher median salary from (at least) 2020-2024. Historical wage gaps can make it tempting to draw quick conclusions about salary unfairness from this plot. Even if gender predictions were 100% accurate, it is important not to assume a reason for males having a larger median salary for years 2020–2024 without further investigation. This could be due to a variety of factors, such as work experience or males working in higher-paying fields.
 
-One limitation is that not all the babyname datasets come from reliable sources. Two of them come from Kaggle and it is difficult to ascertain how authentic the data is. It's possible that some of the data is fictitious which would affect the results of the gender corpus predictions. If I were to redo this project I would spend more time looking for reputable data sources such as [@UCI].
+The main limitation of this report is that gender prediction is not very accurate as detailed below. 
 
-Another limitation, I do not have a good estimate of the accuracy of gender predictions using the naive bayes classification model.
+Not all the babyname datasets come from reliable sources. Two of them come from Kaggle and it is difficult to ascertain how authentic the data is. It's possible that some of the data is fictitious, which could affect the results of the gender corpus predictions. If I were to redo this project I would spend more time looking for reputable data sources.
 
- For one, the babyset training data is so different from the UBC name data that predict-proba score outputted by the model is not informative in regards to how "good" the predictions are. I minimized the impact of incorrect gender predictions by only including those the model was most confident about. 
+Another limitation is that I do not have a good estimate of the accuracy of gender predictions using the NLTK Naive Bayes classification model. For one, the baby name training data is quite different from the UBC data I am predicting on. Additionally, the Naive Bayes model assumes covariate independence conditional on class. The features used are correlated, violating this assumption. This can result in reduced performance and inaccurate class probabilities. Despite the assumption violation, I chose to use the Naive Bayes classifier as it efficiently handles text data, large datasets, and seemed to create reasonable predictions. Also, I attempted to minimize the impact of incorrect Naive Bayes classifications by only including those that the model was most confident about. 
 
- Also, the naive bayes model has an assumtion of caovariate independence conditional on the class. The features of the model are correlated, violating this assumtion. This can result in reduced performance and innaccurate class probabilities.
+For simplicity, I chose to only predict male and female genders. However, many people do not fit into this binary and therefore my accuracy for them is 0.
 
+Even if I had the most reliable data sources, the best model, and more gender options, first name is not a direct indicator of gender so misgendering can still occur.
 
-Even if I had the best trained model with more gender options, the more reliable data sources, and training data that looked like the population, misgendering could still occur. I do not have the ground truths to verify everyones gender. 
-
-- Naive Bayes conditional independence assumption violated
-  These features are correlated which violates the Naive Bayes conditional independence assumption. However, I decided to stick with the NLTK naive bayes classifier as it efficiently handles text data, large datasets, and still performs fairly well.
-- Can see males have a larger median salary for years 2020 - 2024. Cannot infer any reason for this without further investigation.
-- etc.
-
-Overall, **due to the low level of accuracy in gender predicion, this report should not be used to draw any conclusions around salary by gender, especially in regards to salary equity.**
+Overall, **due to the unknown accuracy in gender predicion and limited analysis, this report should not be used to draw any conclusions around gender and salaries, especially in regards to salary equity.**
 
 ## References
