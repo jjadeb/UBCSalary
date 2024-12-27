@@ -415,7 +415,7 @@ def find_change_over_years(data, numeric_col, numeric_str):
     Returns:
     --------
     result_df : pandas.DataFrame
-        DataFrame containing columns 'First_Name', 'Last_Name', 'Sex_at_birth', 'transition_year', 
+        DataFrame containing columns 'First_Name', 'Last_Name', 'Guessed_Gender', 'transition_year', 
         '{numeric}_change_amount', and '{numeric}_change_percent' indicating the change in the 
         numeric column over consecutive years.
 
@@ -433,7 +433,7 @@ def find_change_over_years(data, numeric_col, numeric_str):
     find_change_over_years(data, 'Salary', 'salary')
 
     result_df:
-    | First_Name | Last_Name | Sex_at_birth | transition_year | salary_change_amount | salary_change_percent |
+    | First_Name | Last_Name |Guessed_Gender| transition_year | salary_change_amount | salary_change_percent |
     |------------|-----------|--------------|-----------------|----------------------|-----------------------|
     | John       | Smith     | Male         | 2020            | 2000                 | 4.0                   |
     | Emily      | Johnson   | Female       | 2021            | 5000                 | 8.33                  |
@@ -459,7 +459,7 @@ def find_change_over_years(data, numeric_col, numeric_str):
     merged_df['transition_year'] = merged_df['Year_y']
 
     # Select columns of interest
-    result_df = merged_df[['First_Name', 'Last_Name', 'Sex_at_birth_x','transition_year', f'{numeric_str}_change_amount',f'{numeric_str}_change_percent']].rename(columns = {'Sex_at_birth_x':'Sex_at_birth'})
+    result_df = merged_df[['First_Name', 'Last_Name', 'Guessed_Gender_x','transition_year', f'{numeric_str}_change_amount',f'{numeric_str}_change_percent']].rename(columns = {'Guessed_Gender_x':'Guessed_Gender'})
     
     return result_df
 
@@ -488,7 +488,7 @@ def find_median_data(data, year_col, numeric_col):
     Example:
     --------
     data:
-    |   Year   |  Sex_at_birth  |  Income  |
+    |   Year   | Guessed_Gender |  Income  |
     |----------|----------------|----------|
     |   2020   |     Female     |   5000   |
     |   2020   |     Male       |   6000   |
@@ -512,7 +512,7 @@ def find_median_data(data, year_col, numeric_col):
     min_median: 5000
 
     '''
-    median_data = data.groupby([year_col, 'Sex_at_birth'])[numeric_col].median().unstack()
+    median_data = data.groupby([year_col, 'Guessed_Gender'])[numeric_col].median().unstack()
     max_median = max(max(median_data["Male"]),max(median_data["Female"]))
     min_median = min([min(median_data["Male"]),min(median_data["Female"]),0])
     return median_data, max_median, min_median
@@ -540,36 +540,36 @@ def main(predictions_input_file, plot_output_folder):
         data_summary_year, min_remuneration, max_remuneration, min_expenses, max_expenses = create_summary_table(processed_data, "Remuneration", "Expenses")
 
         # create top ten bar plots for salaries
-        create_top_ten_bar_plot(processed_data, 'Remuneration', 'Name', 'Sex_at_birth', 'Female',
+        create_top_ten_bar_plot(processed_data, 'Remuneration', 'Name', 'Guessed_Gender', 'Female',
                                 'Male', f'salaries_{year}', f'Top Ten Salaries in {year}', 
                                 'Name', 'Salary (CAD, in thousands)', plot_output_folder)
         
         # create top ten bar plots for expenses
-        create_top_ten_bar_plot(processed_data, 'Expenses', 'Name', 'Sex_at_birth', 'Female',
+        create_top_ten_bar_plot(processed_data, 'Expenses', 'Name', 'Guessed_Gender', 'Female',
                                 'Male', f'expenses_{year}', f'Top Ten Expenses in {year}', 
                                 'Name', 'Expenses (CAD)', plot_output_folder)
         
         # create histogram for salaries split by gender
         create_histogram_plot_for_one_year(processed_data, min_remuneration, max_remuneration, 
-                                           'Remuneration', 'Sex_at_birth', 
+                                           'Remuneration', 'Guessed_Gender', 
                                            f'Distribution of Salary by Gender {year}', 
                                            'Salary (CAD, in thousands)', 'Frequency', 
                                            f'salaries_by_gender_{year}',0.5,100,plot_output_folder)
         
         # create histogram for expenses split by gender
         create_histogram_plot_for_one_year(processed_data, min_expenses, max_expenses, 
-                                           'Expenses', 'Sex_at_birth', 
+                                           'Expenses', 'Guessed_Gender', 
                                            f'Distribution of Expenses by Gender {year}', 
                                            'Expenses (CAD)', 'Frequency', 
                                            f'expenses_by_gender_{year}',0.2,200,plot_output_folder)
         
         # create box plots for salary split by gender
-        create_box_plots(processed_data, 'Remuneration', 'Sex_at_birth', "\nSalary (CAD, in thousands)", 
+        create_box_plots(processed_data, 'Remuneration', 'Guessed_Gender', "\nSalary (CAD, in thousands)", 
                          "Guessed Gender", f"Salary Distribution by Gender in {year} \n", 
                          f'salary_by_gender_{year}',plot_output_folder)
         
         # create box plots for expenses split by gender
-        create_box_plots(processed_data, 'Expenses', 'Sex_at_birth', "\nExpenses (CAD)", 
+        create_box_plots(processed_data, 'Expenses', 'Guessed_Gender', "\nExpenses (CAD)", 
                          "Guessed Gender", f"Expenses Distribution by Gender in {year} \n", 
                          f'expenses_by_gender_{year}',plot_output_folder)
     

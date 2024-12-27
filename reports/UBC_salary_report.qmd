@@ -123,7 +123,7 @@ matched_percentage = round(100*corpus_predictions.shape[0]/(corpus_predictions.s
 #| tbl-cap: Babyname Data
 corpus_predictions = pd.read_csv("../data/gender_predictions/corpus_gender_predictions.csv")
 corpus_predictions_accurate = corpus_predictions[corpus_predictions["Estimated_Accuracy"] >= 0.8]
-corpus_predictions_accurate[["First_Name","Sex_at_birth","Estimated_Accuracy"]].head(5)
+corpus_predictions_accurate[["First_Name","Guessed_Gender","Estimated_Accuracy"]].head(5)
 ```
 
 ```{python}
@@ -175,14 +175,14 @@ Finally, after making predictions on the UBC staff data, we can see in @tbl-wors
 #| label: tbl-worstnltkpreds
 #| tbl-cap: Least Confident NLTK predictions
 nltk_predictions = pd.read_csv("../data/gender_predictions/nltk_gender_predictions.csv")
-nltk_predictions.sort_values(by="Estimated_Accuracy", ascending=True)[["First_Name", "Sex_at_birth","Estimated_Accuracy"]].drop_duplicates().head(5)
+nltk_predictions.sort_values(by="Estimated_Accuracy", ascending=True)[["First_Name", "Guessed_Gender","Estimated_Accuracy"]].drop_duplicates().head(5)
 ```
 
 ```{python}
 #| label: tbl-bestnltkpreds
 #| tbl-cap: Most Confident NLTK predictions
 nltk_predictions = pd.read_csv("../data/gender_predictions/nltk_gender_predictions.csv")
-nltk_predictions.sort_values(by="Estimated_Accuracy", ascending=False)[["First_Name", "Sex_at_birth","Estimated_Accuracy"]].drop_duplicates().head(5)
+nltk_predictions.sort_values(by="Estimated_Accuracy", ascending=False)[["First_Name", "Guessed_Gender","Estimated_Accuracy"]].drop_duplicates().head(5)
 ```
 
 To represent the extra uncertainty in using a classifier compared to the babyname corpus, the `Estimated_Accuracy` column for NLTK predictions is the classifier's predict-proba score multplied by `{python} accuracy`. Where `{python} accuracy` is the accuracy of the classifier on the test set.

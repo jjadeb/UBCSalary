@@ -9,4 +9,6 @@
 .bash_history
 .conda
 __pycache__
+plots/
+data/
 

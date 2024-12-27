@@ -345,7 +345,7 @@ def make_gender_predictions_using_corpus(salary_data, name_corpus):
 
     Returns:
     pop_df_predictions:
-    | First_Name | Salary | Sex_at_birth |
+    | First_Name | Salary | Guessed_Gender |
     |------------|--------|--------------|
     | John       | 50000  | Male         |
     | Emily      | 60000  | Female       |
@@ -357,10 +357,12 @@ def make_gender_predictions_using_corpus(salary_data, name_corpus):
     | Alex       | 20000  |
     '''
     pop_df_predicted = pd.merge(salary_data, name_corpus, on = ['First_Name'], how = 'left')
+    pop_df_predicted = pop_df_predicted.rename(columns={'Sex_at_birth': 'Guessed_Gender'})
     # Create dataset for exact name matches
-    pop_df_predictions = pop_df_predicted[pop_df_predicted['Sex_at_birth'].notnull()]
+    pop_df_predictions = pop_df_predicted[pop_df_predicted['Guessed_Gender'].notnull()]
     # Create dataset where there was no exact match and sex still needs to be predicted
-    pop_df_needs_predictions = pop_df_predicted[~pop_df_predicted['Sex_at_birth'].notnull()]
+    pop_df_needs_predictions = pop_df_predicted[~pop_df_predicted['Guessed_Gender'].notnull()]
+
     return pop_df_predictions, pop_df_needs_predictions
      
    

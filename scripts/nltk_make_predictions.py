@@ -47,7 +47,7 @@ def main(model_path,nltk_test_data,needs_predictions_file_path,nltk_predictions_
     # create a list of tuples with the first item in the tuple being a featureset
     # and the second item in the tuble being an empty string for the unknown sex 
     ### ex: [({name: 'bobby', last_3_letters: 'bby'},'')]
-    list_of_features = feature_engineering(needs_predictions_df, 'First_Name', 'Sex_at_birth')
+    list_of_features = feature_engineering(needs_predictions_df, 'First_Name', 'Guessed_Gender')
 
     # Retrieve only the featuresets from the list tuples
     list_of_features = [i[0] for i in list_of_features]
@@ -55,8 +55,8 @@ def main(model_path,nltk_test_data,needs_predictions_file_path,nltk_predictions_
     ################ make predictions and assign accuracy ################
 
     # Make sex column of type string, then make sex predictions 
-    needs_predictions_df['Sex_at_birth'] = ""
-    needs_predictions_df.loc[:,'Sex_at_birth'] = classifier.classify_many(list_of_features)
+    needs_predictions_df['Guessed_Gender'] = ""
+    needs_predictions_df.loc[:,'Guessed_Gender'] = classifier.classify_many(list_of_features)
 
     # For the accuracy column, I am using the predict proba score given by the classifier
     # multiplied by the accuracy score on the test set
