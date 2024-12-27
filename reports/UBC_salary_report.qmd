@@ -11,6 +11,7 @@ format:
     pdf: 
         toc: true
         toc-depth: 2
+        fig-pos: H
 bibliography: references.bib
 execute: 
     echo: false
@@ -97,15 +98,15 @@ In order to predict gender, I used datasets with babynames and assigned genders.
 
 For each UBC staff name, I found whether that name was more common among girls or boys in the babyname corpus. Then, I guessed the gender that was most common.
 
-In @tbl-babynames, the `Estimated_Accuracy` column shows the percentage of gender majority from the babyname corpus. For example, if 95% of babys named George in the dataset were male, the `Estimated_Accuracy` column value would be 0.95. Any staff names that had less than an 80% gender majority were given a null gender.
+In @tbl-babynames, the `Confidence_Score` column shows the percentage of gender majority from the babyname corpus. For example, if 95% of babys named George in the dataset were male, the `Confidence_Score` column value would be 0.95. The Indian Babyname dataset did not include a majority percentage, so an arbitrary confidence score of 0.85 was given. Any staff names that had less than a 0.8 confidence score were given a null gender.
 
 ```{python}
 #| label: tbl-babynames
 #| tbl-cap: Babyname Data
 clean_babynames = pd.read_csv("../data/gender_corpus/clean_name_corpus.csv")
-low_accuracy_df = clean_babynames.sort_values(by="Estimated_Accuracy").head(1)
+low_accuracy_df = clean_babynames.sort_values(by="Confidence_Score").head(1)
 low_accuracy_name = low_accuracy_df.iloc[0]["First_Name"]
-low_accuracy_value = low_accuracy_df.iloc[0]["Estimated_Accuracy"]
+low_accuracy_value = low_accuracy_df.iloc[0]["Confidence_Score"]
 low_accuracy_df
 ```
 
@@ -122,13 +123,13 @@ matched_percentage = round(100*corpus_predictions.shape[0]/(corpus_predictions.s
 #| label: tbl-corpuspreds
 #| tbl-cap: Babyname Data
 corpus_predictions = pd.read_csv("../data/gender_predictions/corpus_gender_predictions.csv")
-corpus_predictions_accurate = corpus_predictions[corpus_predictions["Estimated_Accuracy"] >= 0.8]
-corpus_predictions_accurate[["First_Name","Guessed_Gender","Estimated_Accuracy"]].head(5)
+corpus_predictions_accurate = corpus_predictions[corpus_predictions["Confidence_Score"] >= 0.8]
+corpus_predictions_accurate[["First_Name","Guessed_Gender","Confidence_Score"]].head(5)
 ```
 
 ```{python}
 corpus_predictions = pd.read_csv("../data/gender_predictions/corpus_gender_predictions.csv")
-corpus_predictions_accurate = corpus_predictions[corpus_predictions["Estimated_Accuracy"] >= 0.8]
+corpus_predictions_accurate = corpus_predictions[corpus_predictions["Confidence_Score"] >= 0.8]
 corpus_accurate_value = round(corpus_predictions_accurate.shape[0]*100/corpus_predictions.shape[0],1)
 ```
 
@@ -175,23 +176,23 @@ Finally, after making predictions on the UBC staff data, we can see in @tbl-wors
 #| label: tbl-worstnltkpreds
 #| tbl-cap: Least Confident NLTK predictions
 nltk_predictions = pd.read_csv("../data/gender_predictions/nltk_gender_predictions.csv")
-nltk_predictions.sort_values(by="Estimated_Accuracy", ascending=True)[["First_Name", "Guessed_Gender","Estimated_Accuracy"]].drop_duplicates().head(5)
+nltk_predictions.sort_values(by="Confidence_Score", ascending=True)[["First_Name", "Guessed_Gender","Confidence_Score"]].drop_duplicates().head(5)
 ```
 
 ```{python}
 #| label: tbl-bestnltkpreds
 #| tbl-cap: Most Confident NLTK predictions
 nltk_predictions = pd.read_csv("../data/gender_predictions/nltk_gender_predictions.csv")
-nltk_predictions.sort_values(by="Estimated_Accuracy", ascending=False)[["First_Name", "Guessed_Gender","Estimated_Accuracy"]].drop_duplicates().head(5)
+nltk_predictions.sort_values(by="Confidence_Score", ascending=False)[["First_Name", "Guessed_Gender","Confidence_Score"]].drop_duplicates().head(5)
 ```
 
-To represent the extra uncertainty in using a classifier compared to the babyname corpus, the `Estimated_Accuracy` column for NLTK predictions is the classifier's predict-proba score multplied by `{python} accuracy`. Where `{python} accuracy` is the accuracy of the classifier on the test set.
+To represent the extra uncertainty in using a classifier compared to the babyname corpus, the `Confidence_Score` column for NLTK predictions is the classifier's predict-proba score multplied by `{python} accuracy`. Where `{python} accuracy` is the accuracy of the classifier on the test set.
 
 Like with the babyname corpus predictions, NLTK predictions with an accuracy less than 0.8 were given a gender prediction of `None`. This was the case if the predict-proba score from the classifier was less than `{python} round(0.8/accuracy,2)`.
 
 ```{python}
 nltk_predictions = pd.read_csv("../data/gender_predictions/nltk_gender_predictions.csv")
-accurate_nltk_predictions = nltk_predictions[nltk_predictions['Estimated_Accuracy'] >= 0.8]
+accurate_nltk_predictions = nltk_predictions[nltk_predictions['Confidence_Score'] >= 0.8]
 nltk_kept_preds = round(100*accurate_nltk_predictions.shape[0]/(nltk_predictions.shape[0]),1)
 ```
 
@@ -246,15 +247,24 @@ There seems to be a slight decrease median raise percentage between 2020 and 202
 
 ## Limitations
 
-**Due to the low level of accuracy in gender predicion of this report, conlusions drawn are not meaningful.**
+There are many limitations to this exploratory analysis.
 
-- NLTK training data not representative of real data
-- no practical way to check ground truths
-- data sources
-- gender not binary
+One limitation is that not all the babyname datasets come from reliable sources. Two of them come from Kaggle and it is difficult to ascertain how authentic the data is. It's possible that some of the data is fictitious which would affect the results of the gender corpus predictions. If I were to redo this project I would spend more time looking for reputable data sources such as [@UCI].
+
+Another limitation, I do not have a good estimate of the accuracy of gender predictions using the naive bayes classification model.
+
+ For one, the babyset training data is so different from the UBC name data that predict-proba score outputted by the model is not informative in regards to how "good" the predictions are. I minimized the impact of incorrect gender predictions by only including those the model was most confident about. 
+
+ Also, the naive bayes model has an assumtion of caovariate independence conditional on the class. The features of the model are correlated, violating this assumtion. This can result in reduced performance and innaccurate class probabilities.
+
+
+Even if I had the best trained model with more gender options, the more reliable data sources, and training data that looked like the population, misgendering could still occur. I do not have the ground truths to verify everyones gender. 
+
 - Naive Bayes conditional independence assumption violated
   These features are correlated which violates the Naive Bayes conditional independence assumption. However, I decided to stick with the NLTK naive bayes classifier as it efficiently handles text data, large datasets, and still performs fairly well.
 - Can see males have a larger median salary for years 2020 - 2024. Cannot infer any reason for this without further investigation.
 - etc.
+
+Overall, **due to the low level of accuracy in gender predicion, this report should not be used to draw any conclusions around salary by gender, especially in regards to salary equity.**
 
 ## References

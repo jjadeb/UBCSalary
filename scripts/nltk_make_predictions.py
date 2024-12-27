@@ -61,7 +61,7 @@ def main(model_path,nltk_test_data,needs_predictions_file_path,nltk_predictions_
     # For the accuracy column, I am using the predict proba score given by the classifier
     # multiplied by the accuracy score on the test set
     # The predict proba score represents the uncertainty of the model between the two sexes
-    needs_predictions_df.loc[:,'Estimated_Accuracy'] = [round(max(i.prob('Male'),i.prob('Female'))*accuracy,2) for i in classifier.prob_classify_many(list_of_features)]
+    needs_predictions_df.loc[:,'Confidence_Score'] = [round(max(i.prob('Male'),i.prob('Female'))*accuracy,2) for i in classifier.prob_classify_many(list_of_features)]
 
     ################ save the predictions ################
     # saving the nltk predictions

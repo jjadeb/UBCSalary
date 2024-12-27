@@ -90,7 +90,7 @@ def main(nltk_gender_predictions_input,corpus_gender_predictions_input,all_gende
     complete_predictions_clean = complete_predictions.drop(columns = ['index'])
 
     # remove gender predictions that have an accuracy of less than 0.8
-    complete_predictions_clean.loc[complete_predictions_clean['Estimated_Accuracy'] < 0.8,'Guessed_Gender'] = ""
+    complete_predictions_clean.loc[complete_predictions_clean['Confidence_Score'] < 0.8,'Guessed_Gender'] = ""
 
     # change gender predictions that were found to be incorrect
     complete_predictions_clean = change_sex(complete_predictions_clean, "Lakshmi", "Yatham", "Male")

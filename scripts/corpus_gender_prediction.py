@@ -221,7 +221,7 @@ def create_and_filter_accuracy_column(dataframe):
     Returns:
     --------
     dataframe: pandas.DataFrame
-        filtered DataFrame with columns 'Sex_at_birth', 'First_Name', and 'Estimated_Accuracy'
+        filtered DataFrame with columns 'Sex_at_birth', 'First_Name', and 'Confidence_Score'
 
     Example
     -------
@@ -233,16 +233,16 @@ def create_and_filter_accuracy_column(dataframe):
     | Male         | Sam        | 8000  | 15000       |
 
     Returns:
-    | Sex_at_birth | First_Name  | Estimated_Accuracy |
+    | Sex_at_birth | First_Name  | Confidence_Score |
     |--------------|------------ |----------|
     | Male         | Sam         | 0.53     |
     | Female       | Stephanie   | 1.0      |
     '''
 
     # Create a new column that contains the percentage of counts that are [fem/male] for the given baby name
-    dataframe['Estimated_Accuracy'] = round(dataframe['Count']/dataframe['Total_Count'],2)
+    dataframe['Confidence_Score'] = round(dataframe['Count']/dataframe['Total_Count'],2)
     # keep row with the sex that has the highest accuracy
-    dataframe = dataframe.sort_values('Estimated_Accuracy', ascending=False).drop_duplicates('First_Name').reset_index()
+    dataframe = dataframe.sort_values('Confidence_Score', ascending=False).drop_duplicates('First_Name').reset_index()
     # drop useless columns
     dataframe = dataframe.drop(columns = ['Count', 'Total_Count'])
     return dataframe
@@ -262,7 +262,7 @@ def prepare_indian_babyname_data(indian_female_df,indian_male_df):
     Returns:
     --------
     pandas.DataFrame
-        DataFrame containing combined Indian baby names data with columns 'Sex_at_birth', 'First_Name', and 'Estimated_Accuracy'.
+        DataFrame containing combined Indian baby names data with columns 'Sex_at_birth', 'First_Name', and 'Confidence_Score'.
 
     Example
     -------
@@ -280,7 +280,7 @@ def prepare_indian_babyname_data(indian_female_df,indian_male_df):
     | Arjun     | m      | indian |
 
     Returns:
-    | Sex_at_birth | First_Name | Estimated_Accuracy |
+    | Sex_at_birth | First_Name | Confidence_Score |
     |--------------|----------- |----------|
     | Female       | Aaradhya   | 0.85     |
     | Female       | Diya       | 0.85     |
@@ -303,7 +303,7 @@ def prepare_indian_babyname_data(indian_female_df,indian_male_df):
     # drop unnecessary columns
     indian_names = indian_names.drop(columns = ['race'])
     # Apply arbitrary accuracy value
-    indian_names['Estimated_Accuracy'] = 0.85
+    indian_names['Confidence_Score'] = 0.85
     return indian_names
 
 
