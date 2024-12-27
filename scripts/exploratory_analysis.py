@@ -585,6 +585,7 @@ def main(predictions_input_file, plot_output_folder):
     salary_change_data = find_change_over_years(data,"Remuneration","salary")
     median_salary_percent_change, max_median_salary_percent_change, min_median_salary_percent_change = find_median_data(salary_change_data, "transition_year", "salary_change_percent")
     median_salary_amount_change, max_median_salary_amount_change, min_median_salary_amount_change = find_median_data(salary_change_data, "transition_year", "salary_change_amount")
+    salary_change_data.to_csv("data/test_salary_change.xlsx")
 
     # find the percentage and amount changes for expenses over the years for each gender
     expenses_change_data = find_change_over_years(data,"Expenses","expenses")
@@ -605,7 +606,7 @@ def main(predictions_input_file, plot_output_folder):
     # create line plot for median salary percentage change over time split by gender
     create_line_plot(median_salary_percent_change, "#2B2F42", "#FF8C00", min_year + 1, max_year, 
                      max_median_salary_percent_change, min_median_salary_percent_change, 'Median Salary Percentage Change by Gender \n', 
-                     'Year', 'Median Salary Change (%) \n', 'median_salary_%_change_by_gender', 
+                     'Year', 'Median Salary Change (%) \n', 'median_salary_percent_change_by_gender', 
                      plot_output_folder)
     
     # create line plot for median salary amount change over time split by gender
@@ -617,7 +618,7 @@ def main(predictions_input_file, plot_output_folder):
     # create line plot for median expenses percentage change over time split by gender
     create_line_plot(median_expenses_percent_change, "#2B2F42", "#FF8C00", min_year + 1, max_year, 
                      max_median_expenses_percent_change, min_median_expenses_percent_change, 'Median Expenses Percentage Change by Gender \n', 
-                     'Year', 'Median Expenses Change (%) \n', 'median_expenses_%_change_by_gender', 
+                     'Year', 'Median Expenses Change (%) \n', 'median_expenses_percent_change_by_gender', 
                      plot_output_folder)
     
     # create line plot for median expenses amount change over time split by gender

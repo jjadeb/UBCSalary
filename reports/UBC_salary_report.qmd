@@ -23,6 +23,8 @@ import pandas as pd
 import pickle
 from IPython.display import Markdown, display
 from tabulate import tabulate
+from os import listdir
+import re
 ```
 
 
@@ -32,7 +34,7 @@ This document explores The University of British Columbia (UBC) faculty salaries
 
 ## Data
 
-Salary data was sourced from @salary_data. To access individual financial reports, click on the yearly links under the header `Statement of Financial Information (SOFI)`.
+Salary data for UBC staff members making over 75000 CAD anually was sourced from @salary_data. To access individual financial reports, click on the yearly links under the header `Statement of Financial Information (SOFI)`.
 
 Gender data was inferred using first names of staff members. In order to guess gender, I used baby name datasets [@canadian_babyname; @american_babyname; @indian_babyname].
 
@@ -197,6 +199,50 @@ Overall, `{python} nltk_kept_preds`% of the NLTK predictions were kept and the r
 
 ## Exploratory Data Analysis
 
+Using gender predictions, I created a variety of plots showing the salaries of staff members of UBC. This data only includes staff members making over 75000 CAD anually.
+
+```{python}
+## Find plots of the most recent year
+# Get bar plot files
+files = listdir("../plots/bar_plots")
+# Create regex pattern for files of interest
+year_pattern = re.compile(r'top_ten_salaries_(20[0-9][0-9])\.png')
+# Find regex match for files of interest
+matches = list(map(lambda x: year_pattern.search(x), files))
+# Find the year listed for each file
+years = list(map(lambda x: int(x.group(1)) if x else 0, matches))
+# Find the most recent year available
+most_recent_year = max(years)
+```
+
+```{python}
+# Get plot file paths
+bar_plot_path = f"../plots/bar_plots/top_ten_salaries_{most_recent_year}.png"
+boxplot_path = f"../plots/box_plots/boxplot_of_salary_by_gender_{most_recent_year}.png"
+histogram_path = f"../plots/histogram_plots/histogram_of_salaries_by_gender_{most_recent_year}.png"
+```
+
+![Top Ten Salaries](`{python} bar_plot_path`){#fig-bar}
+
+@fig-bar shows the top ten UBC staff salaries.
+
+![Salary Boxplot](`{python} boxplot_path`){#fig-box}
+
+@fig-box shows box plots of UBC staff salaries.
+
+![Salary Histogram](`{python} histogram_path`){#fig-hist}
+
+@fig-hist shows a histogram plot of UBC staff salaries. This histogram is split by guessed gender.
+
+![Salary Line Plot](../plots/line_plots/lineplot_of_median_salary_by_gender.png){#fig-line}
+
+@fig-line shows a line plot of median UBC staff salaries over all the years I have collected data. There seems to be fairly minimal change in median salary between 2020 and 2023, and then an increase in median salary in 2024. Males have a higher median salary for years 2020 to 2024.
+
+![Salary Change Line Plot](../plots/line_plots/lineplot_of_median_salary_percent_change_by_gender.png){#fig-linechange}
+
+@fig-linechange shows a line plot of the median percent change in UBC staff salaries over all the years I have collected data. The data point at 2024 reflects the median percent change from FY23 to FY24. To calculate these values, first I calculated the percent change in salary for individaul staff members who had data for consecutive years. Then, for each year transition, I calculated the median percent change for guessed males and guessed females. 
+
+There seems to be a slight decrease median raise percentage between 2020 and 2023, and then a large increase in in 2024. This is in line with our observations for @fig-line. Females have a slightly higher median percentage salary increase for years 2020 to 2024.
 
 ## Limitations
 
@@ -208,6 +254,7 @@ Overall, `{python} nltk_kept_preds`% of the NLTK predictions were kept and the r
 - gender not binary
 - Naive Bayes conditional independence assumption violated
   These features are correlated which violates the Naive Bayes conditional independence assumption. However, I decided to stick with the NLTK naive bayes classifier as it efficiently handles text data, large datasets, and still performs fairly well.
+- Can see males have a larger median salary for years 2020 - 2024. Cannot infer any reason for this without further investigation.
 - etc.
 
 ## References
