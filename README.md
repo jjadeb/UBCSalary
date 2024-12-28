@@ -1,6 +1,6 @@
 # Visualizing UBC Salaries Split by Gender
 
-The aim of this project is to create an exploratory analysis of The University of British Columbia (UBC) faculty salaries based on guessed gender. A secondary goal is to make sure my analysis is reproducible and auditable.
+The aim of this project is to create an exploratory analysis of The University of British Columbia (UBC) staff salaries based on guessed gender. A secondary goal is to make sure my analysis is reproducible and auditable.
 
 The project involves several steps: gathering and cleaning salary data, making staff gender predictions using large babyname datasets, using a machine learning model to guess remaining genders, and visualizing the cleaned data.
 
