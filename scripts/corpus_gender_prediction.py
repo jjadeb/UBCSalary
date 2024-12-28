@@ -433,6 +433,7 @@ def main(clean_salary_data_file, canadian_babyname_data_file, american_babyname_
 
     canadian_and_american_babyname_data_with_accuracy = create_and_filter_accuracy_column(canadian_and_american_babyname_data)
 
+    # Indian dataset goes last so when there is a name in both sets, we keep the one with the more accurate confidence score
     name_corpus = pd.concat([canadian_and_american_babyname_data_with_accuracy,indian_babyname_data]).drop_duplicates(subset = 'First_Name')
 
     ############# MAKE PREDICTIONS ##############

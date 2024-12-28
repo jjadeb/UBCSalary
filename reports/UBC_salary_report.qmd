@@ -31,17 +31,17 @@ import re
 
 ## Aim
 
-This document explores The University of British Columbia (UBC) faculty salaries based on guessed gender.
+This report explores The University of British Columbia (UBC) staff salaries based on guessed gender. When new salary data is released, re-runnning the analysis will automatically update the figures and tables in this report with the latest data.
 
 ## Data
 
-Salary data for UBC staff members making over 75000 CAD anually was sourced from @salary_data. To access individual financial reports, click on the yearly links under the header `Statement of Financial Information (SOFI)`.
+Salary data for UBC staff members making over 75000 CAD annually was sourced from @salary_data. To access individual financial reports, click on the yearly links under the header [`Statement of Financial Information (SOFI)`](https://finance.ubc.ca/reporting-planning-analysis/reports-and-disclosures).
 
 Gender data was inferred using first names of staff members. In order to guess gender, I used baby name datasets [@canadian_babyname; @american_babyname; @indian_babyname].
 
 ## Ethics
 
-In this project first names are used to guess whether someone is "male" or "female". Many people do not fit into these binary categories. In addition, while first names can sometimes be an indication of someones gender, first names are not inherintly gendered. Misgendering in this project can have harmful effects.
+In this project first names are used to guess whether someone is "male" or "female". Many people do not fit into these binary categories. In addition, while first names can sometimes be an indication of someone's gender, first names are not inherently gendered. Misgendering in this project can have harmful effects.
 
 I encourage anyone who notices a misgendering within this project to raise an issue in the issues tab, and it will be corrected. In addition, I encourage respectful and inclusive language in all discussions related to gender. 
 
@@ -53,12 +53,12 @@ The Python programming language [@Python] was used to perform this analysis.
 
 As mentioned earlier, for UBC salary data, I used the salary PDFs that UBC releases every year [@salary_data]. The following steps were taken to collect the data.
 
-- Use the `requests` package to access the UBC Financial Reports [webpage](https://finance.ubc.ca/reporting-planning-analysis/reports-and-disclosures).
-- Extract all links and filter for the Statement of Financial Information (SOFI) PDF links which contain salary information.
-- If there are any PDFs from which I have not already collected salary data, extract the text from the PDF using the package `pypdf`.
-- Store the new salary data
+- Used the `requests` package to access the UBC Financial Reports [webpage](https://finance.ubc.ca/reporting-planning-analysis/reports-and-disclosures).
+- Extracted all links and filter for the Statement of Financial Information (SOFI) PDF links which contain salary information.
+- If there were any PDFs from which I have not already collected salary data, extracted the text from the PDF using the package `pypdf`.
+- Stored the new salary data
 
-An exerpt of the raw salary data is below.
+An excerpt of the raw salary data is below.
 
 ```{python}
   with open("../data/salary_data/raw_salary_data.pickle", "rb") as raw_salary_dict:
@@ -70,18 +70,18 @@ print(raw_salary_text_data["2020"][200210:200300])
 
 ### Data cleaning
 
-In this section, the following steps are taken to clean the salary data:
+In this section, the following steps were taken to clean the salary data:
 
 For each year of salary data,
 
-- Remove special charachters from text. For example, ş.
-- Remove unnecessary text content. For example, the "[Auditor's] Qualified Opinion".
-- Uses regex to process the raw text data into a structured DataFrame with columns: `Name`, `Remuneration`, `Expenses`.
+- Removed special characters from text. For example, ş.
+- Removed unnecessary text content. For example, the "[Auditor's] Qualified Opinion".
+- Uses regex to process the raw text data into a structured DataFrame with columns: `Name`, `Remuneration`, `Expenses`. Remuneration will be referred to as "salary" in this report.
 - Split the `Name` column into first and last names. 
-- Convert salary (remuneration) and expenses columns to a numeric data type.
-- Shorten first and last names to allow for easier name matching between years. For example, someone's name in 2020 could be "Bob M Sherbert" and in 2021 their name could be "Bob-M Sherbert". This name would be shortened to Bob Sherbert to avoid mismatching.
+- Converted salary (remuneration) and expenses columns to a numeric data type.
+- Shortened first and last names to allow for easier name matching between years. For example, someone's name in 2020 could be "Bob M Sherbert" and in 2021 their name could be "Bob-M Sherbert". This name would be shortened to Bob Sherbert to avoid mismatching.
 
-Then, I concatenate dataframes from all years together.
+Then, I concatenated dataframes from all years together.
 
 @tbl-cleandata shows an expert of the cleaned salary data.
 ```{python}
@@ -94,11 +94,15 @@ clean_salary_data.head()
 ## Gender Prediction 
 
 ### Babyname Corpus
-In order to predict gender, I used datasets with babynames and assigned genders. In order to have a somewhat diverse set of baby names, I used babynames from Canadian, American, and Indian sources [@canadian_babyname, @american_babyname, @indian_babyname].
+In order to predict gender, I used datasets with babynames and their assigned genders. In order to have a somewhat diverse set of baby names, I used babynames from Canadian, American, and Indian sources [@canadian_babyname; @american_babyname; @indian_babyname]. I will call this collection of babyname datasets, the "babyname corpus."
 
-For each UBC staff name, I found whether that name was more common among girls or boys in the babyname corpus. Then, I guessed the gender that was most common.
+For each UBC staff name, I found whether that name was more common among girls or boys in the babyname corpus. Then, I guessed the gender that was most common. If the name is not present in the corpus, the guessed gender was `None`.
 
-In @tbl-babynames, the `Confidence_Score` column shows the percentage of gender majority from the babyname corpus. For example, if 95% of babys named George in the dataset were male, the `Confidence_Score` column value would be 0.95. The Indian Babyname dataset did not include a majority percentage, so an arbitrary confidence score of 0.85 was given. Any staff names that had less than a 0.8 confidence score were given a null gender.
+In @tbl-babynames, the `Confidence_Score` column shows the percentage of gender majority from the babyname corpus. For example, if 95% of babies named George in the corpus were male, the `Confidence_Score` column value would be 0.95. 
+
+The Indian Babyname dataset did not include a count for males and females, so if a name only appeared in the Indian Babyname dataset, an arbitrary `Confidence_Score` of 0.85 was given. 
+
+To minimize misgendering, staff names that had less than a 0.8 `Confidence_Score` were given a `Guessed_Gender` of `None`.
 
 ```{python}
 #| label: tbl-babynames
@@ -110,7 +114,7 @@ low_accuracy_value = low_accuracy_df.iloc[0]["Confidence_Score"]
 low_accuracy_df
 ```
 
-@tbl-babynames shows the name `{python} low_accuracy_name` has about the same number of boy and girl names. This name has an accuracy of `{python} low_accuracy_value`. So, since its not above the 80% threshold, anyone with that name would have a gender value of `None` assigned.
+@tbl-babynames shows the name `{python} low_accuracy_name` has a `Confidence_Score` of `{python} low_accuracy_value`. So, since its less than the 0.8 threshold, anyone with that name would have a `Guessed_Gender` value of `None`.
 
 ```{python}
 corpus_predictions = pd.read_csv("../data/gender_predictions/corpus_gender_predictions.csv")
@@ -133,7 +137,7 @@ corpus_predictions_accurate = corpus_predictions[corpus_predictions["Confidence_
 corpus_accurate_value = round(corpus_predictions_accurate.shape[0]*100/corpus_predictions.shape[0],1)
 ```
 
-Around `{python} matched_percentage`% of UBC staff names were matched with names in the babyname corpus. `{python} corpus_accurate_value`% of the corpus matches had over 0.8 accuracy and were kept, the rest were given a prediction of `None`.
+Around `{python} matched_percentage`% of UBC staff names were matched with names in the babyname corpus. `{python} corpus_accurate_value`% of the corpus matches had a `Confidence_Score` over 0.8 and were kept, the rest were given a prediction of `None`.
 
 ### NLTK
 
@@ -143,13 +147,13 @@ For UBC staff names that were not found in the babyname corpus, I used a natural
 
 ```{python}
 #| label: tbl-needspreds
-#| tbl-cap: Example Staff Names Not Found in Babyname Datasets
+#| tbl-cap: Example Staff Names Not Found in Babyname Corpus
 nltk_predictions_needed = pd.read_csv("../data/gender_predictions/needs_gender_predictions.csv")
 pd.DataFrame(nltk_predictions_needed.head(5)["First_Name"])
 ```
 
 
-In order to train and evaluate the model, the babyname corpus was split into a trianing and test set.
+In order to train and evaluate the model, the babyname corpus was split into a training and test set.
 
 Features used to train the Naive Bayes model were the last 2, 3, and 4 letters of the staff member's first name. 
 
@@ -158,7 +162,7 @@ Features used to train the Naive Bayes model were the last 2, 3, and 4 letters o
     accuracy = float(file.read())
 ```
 
- The accuracy on the test set was `{python} accuracy`. However, the accuracy on the UBC staff names that were missing from the babyname corpus is very likely lower than `{python} accuracy`. This is due to the fact that the data we are making predictions on is quite different from our training data.
+ The accuracy on the test set was `{python} accuracy`. However, the accuracy on the UBC staff names that were missing from the babyname corpus is very likely lower than `{python} accuracy`. The data we are making predictions on is quite different from our training data.
 
  Below are the top three features the classifier found most useful for making correct predictions.
 
@@ -168,7 +172,7 @@ Features used to train the Naive Bayes model were the last 2, 3, and 4 letters o
     classifier.show_most_informative_features(n=3)
 ```
 
-We can see there are patterns in first names that could be helpful for predicting gender. However, these patterns may not show up often in the unique UBC staff that were not in the babyname datasets.
+We can see there are patterns in first names that could be helpful for predicting gender. However, these patterns may not show up often in the unique UBC staff names that were not in the babyname corpus.
 
 Finally, after making predictions on the UBC staff data, we can see in @tbl-worstnltkpreds the predictions our classifier was least confident about, and in @tbl-bestnltkpreds and the predictions it was most confident about. 
 
@@ -186,9 +190,9 @@ nltk_predictions = pd.read_csv("../data/gender_predictions/nltk_gender_predictio
 nltk_predictions.sort_values(by="Confidence_Score", ascending=False)[["First_Name", "Guessed_Gender","Confidence_Score"]].drop_duplicates().head(5)
 ```
 
-To represent the extra uncertainty in using a classifier compared to the babyname corpus, the `Confidence_Score` column for NLTK predictions is the classifier's predict-proba score multplied by `{python} accuracy`. Where `{python} accuracy` is the accuracy of the classifier on the test set.
+To represent the extra uncertainty in using a classifier compared to the babyname corpus, the `Confidence_Score` column for NLTK predictions is the classifier's predict-proba score multiplied by `{python} accuracy`. Where `{python} accuracy` is the accuracy of the classifier on the test set.
 
-Like with the babyname corpus predictions, NLTK predictions with an accuracy less than 0.8 were given a gender prediction of `None`. This was the case if the predict-proba score from the classifier was less than `{python} round(0.8/accuracy,2)`.
+Like with the babyname corpus predictions, NLTK predictions with a `Confidence_Score` less than 0.8 were given a gender prediction of `None`. This was the case if the predict-proba score from the classifier was less than `{python} round(0.8/accuracy,2)`.
 
 ```{python}
 nltk_predictions = pd.read_csv("../data/gender_predictions/nltk_gender_predictions.csv")
@@ -196,7 +200,7 @@ accurate_nltk_predictions = nltk_predictions[nltk_predictions['Confidence_Score'
 nltk_kept_preds = round(100*accurate_nltk_predictions.shape[0]/(nltk_predictions.shape[0]),1)
 ```
 
-Overall, `{python} nltk_kept_preds`% of the NLTK predictions were kept and the rest were given a prediction of `None`.
+Overall, `{python} nltk_kept_preds`% of the NLTK predictions were over the 0.8 threshold and were kept. The rest were given a prediction of `None`.
 
 ## Exploratory Data Analysis
 
@@ -225,53 +229,56 @@ histogram_path = f"../plots/histogram_plots/histogram_of_salaries_by_gender_{mos
 
 ![Top Ten Salaries](`{python} bar_plot_path`){#fig-bar}
 
-@fig-bar shows the top ten UBC staff salaries.
+@fig-bar shows the top ten UBC staff salaries. In 2024, Dawn Jia, female President and CEO of UBC Investment Management Trust, had the highest salary by far. The rest of the top ten salaries were guessed males.
 
 ![Salary Boxplot](`{python} boxplot_path`){#fig-box}
 
-@fig-box shows box plots of UBC staff salaries.
+@fig-box shows box plots of UBC staff salaries split by guessed gender. In 2024, this plot showed the male distribution shifted and skewed towards higher salaries. There were many outliers for males and females.
 
 ![Salary Histogram](`{python} histogram_path`){#fig-hist}
 
-@fig-hist shows a histogram plot of UBC staff salaries. This histogram is split by guessed gender.
+@fig-hist shows a histogram plot of UBC staff salaries. This histogram is split by guessed gender and reflects similar information to the box-plots. In 2024, similar to the box-plots, the male distribution was shifted and skewed towards higher salaries.
 
 ![Salary Line Plot](../plots/line_plots/lineplot_of_median_salary_by_gender.png){#fig-line}
 
-@fig-line shows a line plot of median UBC staff salaries over all the years I have collected data. There seems to be fairly minimal change in median salary between 2020 and 2023, and then an increase in median salary in 2024. Males have a higher median salary for (at least) years 2020 to 2024.
+@fig-line shows a line plot of median UBC staff salaries. For both guessed genders, there seems to be fairly minimal change in median salary between 2020 and 2023, and then an increase in median salary in 2024. Males have a higher median salary for (at least) years 2020 to 2024.
 
 ![Salary Change Line Plot](../plots/line_plots/lineplot_of_median_salary_percent_change_by_gender.png){#fig-linechange}
 
-@fig-linechange shows a line plot of the median percent change in UBC staff salaries over all the years I have collected data. The data point at 2024 reflects the median percent change from FY23 to FY24. To calculate these values, first I calculated the percent change in salary for individaul staff members who had data for consecutive years. Then, for each year transition, I calculated the median percent change for guessed males and guessed females. 
+@fig-linechange shows a line plot of the median UBC staff salary percentage change. The data point at 2024 reflects the median percentage change from FY23 to FY24. To calculate these values, first I calculated the salary percentage change for individual staff members who had data for consecutive years. Then, for each year transition, I calculated the median percentage change for guessed males and guessed females. 
 
-There seems to be a slight decrease median raise percentage between 2020 and 2023, and then a large increase in in 2024. This is in line with our observations for @fig-line. Females have a slightly higher median percentage salary increase for years 2020 to 2024.
+For both guessed genders, there is a slight decrease in median percentage change between 2020 and 2023, and then a large increase in 2024. This is in line with our observations for @fig-line. Females have a slightly higher median percentage change for years 2020 to 2024.
 
 ## Limitations
 
-### Salary Equity
+### Salary Equality
 
-@fig-line showed males having a higher median salary from (at least) 2020-2024. Historical wage gaps can make it tempting to draw quick conclusions about salary unfairness from this plot. Even if gender predictions were 100% accurate, it is important not to assume a reason for males having a larger median salary for years 2020–2024 without further investigation. This could be due to a variety of factors, such as work experience or males working in higher-paying fields.
+@fig-line showed males having a higher median salary from (at least) 2020-2024. Historical wage gaps and gender inequality can make it tempting to draw quick conclusions about salary unfairness from this plot. Even if gender predictions were 100% accurate, it is important not to assume a reason for males having a larger median salary for years 2020–2024 without further investigation. This could be due to a variety of factors, such as work experience or males working in higher-paying fields.
 
 ### Predicting Gender
 
 Not all the babyname datasets come from reliable sources. Two of them come from Kaggle and it is difficult to ascertain how authentic the data is. It's possible that some of the data is fictitious, which could affect the results of the gender corpus predictions. If I were to redo this project I would spend more time looking for reputable data sources.
 
-Another limitation is that I do not have a good estimate of the accuracy of gender predictions using the NLTK Naive Bayes classification model. For one, the baby name training data is quite different from the UBC data I am predicting on. Additionally, the Naive Bayes model assumes covariate independence conditional on class. The features used are correlated, violating this assumption. This can result in reduced performance and inaccurate class probabilities. Despite the assumption violation, I chose to use the Naive Bayes classifier as it efficiently handles text data, large datasets, and seemed to create reasonable predictions. Also, I attempted to minimize the impact of incorrect Naive Bayes classifications by only including those that the model was most confident about. 
+Another limitation is that I do not have a good estimate of the accuracy of gender predictions using the NLTK Naive Bayes classification model. For one, the baby name training data is quite different from the UBC data I am predicting on. Additionally, the Naive Bayes model assumes covariate independence conditional on class. The features used are correlated, violating this assumption. This can result in reduced performance and inaccurate class probabilities. Despite the assumption violation, I chose to use the Naive Bayes classifier as it efficiently handles text data, large datasets, and seems to create reasonable predictions. Also, I attempted to minimize the impact of incorrect Naive Bayes classifications by only including those that the model was most confident about. 
 
 For simplicity, I chose to only predict male and female genders. However, many people do not fit into this binary and therefore my accuracy for them is 0.
 
-Even if I had the most reliable data sources, the best model, and more gender options, first name is not a direct indicator of gender so misgendering can still occur.
+Even if I had the most reliable data sources, the best model, and more gender options, first name is not a direct indicator of gender so misgendering may still occur.
 
 ### Limitations Result
 
-Overall, **due to the unknown accuracy in gender predicion and limited analysis, this report should not be used to draw any conclusions around gender and salaries, especially in regards to salary equity.**
+Overall, **due to the limited analysis and unknown accuracy in gender prediction, this report should not be used to draw any conclusions around gender and salaries, especially in regards to salary equality.**
 
 ## Conclusion
 
-Due to the limitations around gender, the most interesting part of this project for me is seeing the percent salary raises each year. I'm curious as to why there was such a large jump in 2024.
+Due to the limitations around gender, the most interesting part of this project for me is seeing the percent changes in salary each year. I'm curious as to why there was such a large jump in 2024.
 
 If I were to improve on this project, I would:
-- Spend more time researching which classifier would be best. Perhaps there is one that handles text data well and have less violated assumptions. 
-- Implement cross-validation to get an improved accuracy estimate.
+
+- Spend more time researching which classifier would work best. Perhaps there is one that handles text data well and has less violated assumptions. 
+
+- Implement cross-validation to get an improved accuracy estimate for the NLTK classifier.
+
 - Do additional research on datasets with east asian names and genders as adding such a dataset to the corpus may help match more names, as well as improve the classifier. 
 
 Overall, I really enjoyed learning about data cleaning, classification, and reproducibility.
