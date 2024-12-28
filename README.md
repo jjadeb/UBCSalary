@@ -15,14 +15,6 @@ The project involves several steps: gathering and cleaning salary data, making s
 - [Dependencies](#dependencies)
 - [License](#license)
 
-## Project History
-
-The final phase of this project, a report detailing the analysis, is a work in progress. For now, you can see the plots created for the analysis in the [plots folder](plots). 
-
-The most up-to-date analysis code is located in the [scripts](scripts) folder.
-
-Located in the reports directory, there is a [notebook](reports/UBC_salary_analysis.ipynb) that contains a record of the original data wrangling steps of this project. This original analysis contained department and job title data for staff memebrs, and the final exploratory analysis is displayed as a [tableau dashboard](https://public.tableau.com/views/2023UBCSalariesJobTitleDepartmentandGuessedGender/Dashboard1?:language=en-US&:sid=&:display_count=n&:origin=viz_share_link). Due to UBC's copyright, the [department and job title data](https://www.directory.ubc.ca/index.cfm) and the scraping script used to obtain the data are not permitted to be published in this repository. So, the original report is not reproducible. Therefore, for the sake of reproducibility, I removed the use of department and job title data and focused on the relationship between staff salaries and guessed genders of staff members. As mentioned, this new analysis is located in the [scripts](scripts) folder.
-
 ## Ethics
 
 In this project first names are used to guess whether someone is "male" or "female". I acknowledge that gender identity is a spectrum and not limited to binary categories. Misgendering, or incorrectly assigning gender to individuals, can have harmful effects and perpetuate stereotypes. While first names can sometimes be an indication of someones gender, first names are not inherintly gendered. 
