@@ -130,4 +130,4 @@ MIT license. See [the license file](LICENSE.md) for more information.
 
 --------------------
 
-For any use of the UBC salary data, please see UBC's Terms of Use [here](https://www.ubc.ca/site/legal.html).
+For any use of the UBC salary data, please see UBC's Terms of Use [here](https://www.ubc.ca/site/legal.html). See [the license file](LICENSE.md) for more information. 
