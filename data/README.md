@@ -8,7 +8,7 @@ Other than running the analysis, no additional work is needed to collect the UBC
 
 **`gender_predictions`**:
 
-This folder is populated with predictions of people's genders when the analysis is run. 
+This folder is created and populated with predictions of people's genders when the analysis is run. 
 
 **`gender_corpus`**:
 
