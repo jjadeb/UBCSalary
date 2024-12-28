@@ -15,8 +15,7 @@ The project involves several steps: gathering and cleaning salary data, making s
 - [Dependencies](#dependencies)
 - [License](#license)
 
-
-## Project History 
+## Project History
 
 The final phase of this project, a report detailing the analysis, is a work in progress. For now, you can see the plots created for the analysis in the [plots folder](plots). 
 
@@ -28,10 +27,9 @@ Located in the reports directory, there is a [notebook](reports/UBC_salary_analy
 
 In this project first names are used to guess whether someone is "male" or "female". I acknowledge that gender identity is a spectrum and not limited to binary categories. Misgendering, or incorrectly assigning gender to individuals, can have harmful effects and perpetuate stereotypes. While first names can sometimes be an indication of someones gender, first names are not inherintly gendered. 
 
-I encourage anyone who notices a misgendering within this project to raise an issue in the issues tab, and it will be corrected. In addition, I encourage respectful and inclusive language in all discussions related to gender. 
+I encourage anyone who notices a misgendering within this project to raise an issue in the issues tab, and it will be corrected. In addition, I encourage respectful and inclusive language in all discussions related to gender.
 
 Please refer to the [Code of Conduct](CODE_OF_CONDUCT.md) for further details on the inclusive standards of this project. Your cooperation in fostering an inclusive environment is greatly appreciated.
-
 
 ## Reprodicible Environment
 
@@ -56,6 +54,7 @@ Run the following command to reset the project to a clean state (i.e., remove al
 ```{bash}
 make clean
 ```
+
 To run the analysis in its entirety, run the following command:
 
 ```{bash}
@@ -66,7 +65,7 @@ make all
 
 Docker is a tool that can be used to run my analysis in a reproducible environment. Build a Docker container by following these steps:
 
-**Setup**
+#### Setup
 
 1. First, ensure you have [Docker](https://www.docker.com/products/docker-desktop/) installed and running on your machine.
 2. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) this repository, and **navigate to the root of the repository** in a terminal window.
@@ -109,9 +108,11 @@ To shut down the container and clean up the resources, type Cntrl + C in the ter
 ```{bash}
 docker-compose rm
 ```
+
 Some instructions have been borrowed from [this repository](https://github.com/ttimbers/breast_cancer_predictor_py)
 
 ## Key Skills Learned
+
 - Reproducibility in Data Science
 - Data Collecting
 - Data Wrangling
