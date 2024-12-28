@@ -43,7 +43,7 @@ Gender data was inferred using first names of staff members. In order to guess g
 
 In this project first names are used to guess whether someone is "male" or "female". Many people do not fit into these binary categories. In addition, while first names can sometimes be an indication of someone's gender, first names are not inherently gendered. Misgendering in this project can have harmful effects.
 
-I encourage anyone who notices a misgendering within this project to raise an issue in the issues tab, and it will be corrected. In addition, I encourage respectful and inclusive language in all discussions related to gender. 
+I encourage anyone who notices a misgendering within this project to raise an issue in the issues tab on [my GitHub page](https://github.com/jjadeb/UBCSalary/issues), and it will be corrected. In addition, I encourage respectful and inclusive language in all discussions related to gender. 
 
 ## Methods
 
