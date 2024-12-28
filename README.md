@@ -122,12 +122,8 @@ Docker is a container solution used to manage the software dependencies for this
 ## License
 
 The UBC Salary Analysis report contained herein is licensed under the
-[Creative Commons Attribution 4.0 International (CC BY 4.0) License](https://creativecommons.org/licenses/by/4.0/legalcode).
-See [the license file](LICENSE.md) for more information. If
+[Creative Commons Attribution 4.0 International (CC BY 4.0) License](https://creativecommons.org/licenses/by/4.0/legalcode). If
 re-using/re-mixing please provide attribution and link to this webpage.
 The software code contained within this repository is licensed under the
-MIT license. See [the license file](LICENSE.md) for more information.
-
---------------------
-
-For any use of the UBC salary data, please see UBC's Terms of Use [here](https://www.ubc.ca/site/legal.html).
+MIT license. For any use of the UBC salary data, please see UBC's Terms of Use [here](https://www.ubc.ca/site/legal.html). 
+See [the license file](LICENSE.md) for more information. 
