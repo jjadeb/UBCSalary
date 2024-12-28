@@ -41,7 +41,7 @@ Gender data was inferred using first names of staff members. In order to guess g
 
 ## Ethics
 
-In this project first names are used to guess whether someone is "male" or "female". Many people do not fit into these categories. Misgendering, or incorrectly assigning gender to individuals, can have harmful effects. In addition, while first names can sometimes be an indication of someones gender, first names are not inherintly gendered. 
+In this project first names are used to guess whether someone is "male" or "female". Many people do not fit into these binary categories. In addition, while first names can sometimes be an indication of someones gender, first names are not inherintly gendered. Misgendering in this project can have harmful effects.
 
 I encourage anyone who notices a misgendering within this project to raise an issue in the issues tab, and it will be corrected. In addition, I encourage respectful and inclusive language in all discussions related to gender. 
 
@@ -247,9 +247,11 @@ There seems to be a slight decrease median raise percentage between 2020 and 202
 
 ## Limitations
 
-One of the plots showed males having a higher median salary from (at least) 2020-2024. Historical wage gaps can make it tempting to draw quick conclusions about salary unfairness from this plot. Even if gender predictions were 100% accurate, it is important not to assume a reason for males having a larger median salary for years 2020–2024 without further investigation. This could be due to a variety of factors, such as work experience or males working in higher-paying fields.
+### Salary Equity
 
-The main limitation of this report is that gender prediction is not very accurate as detailed below. 
+@fig-line showed males having a higher median salary from (at least) 2020-2024. Historical wage gaps can make it tempting to draw quick conclusions about salary unfairness from this plot. Even if gender predictions were 100% accurate, it is important not to assume a reason for males having a larger median salary for years 2020–2024 without further investigation. This could be due to a variety of factors, such as work experience or males working in higher-paying fields.
+
+### Predicting Gender
 
 Not all the babyname datasets come from reliable sources. Two of them come from Kaggle and it is difficult to ascertain how authentic the data is. It's possible that some of the data is fictitious, which could affect the results of the gender corpus predictions. If I were to redo this project I would spend more time looking for reputable data sources.
 
@@ -259,6 +261,19 @@ For simplicity, I chose to only predict male and female genders. However, many p
 
 Even if I had the most reliable data sources, the best model, and more gender options, first name is not a direct indicator of gender so misgendering can still occur.
 
+### Limitations Result
+
 Overall, **due to the unknown accuracy in gender predicion and limited analysis, this report should not be used to draw any conclusions around gender and salaries, especially in regards to salary equity.**
+
+## Conclusion
+
+Due to the limitations around gender, the most interesting part of this project for me is seeing the percent salary raises each year. I'm curious as to why there was such a large jump in 2024.
+
+If I were to improve on this project, I would:
+- Spend more time researching which classifier would be best. Perhaps there is one that handles text data well and have less violated assumptions. 
+- Implement cross-validation to get an improved accuracy estimate.
+- Do additional research on datasets with east asian names and genders as adding such a dataset to the corpus may help match more names, as well as improve the classifier. 
+
+Overall, I really enjoyed learning about data cleaning, classification, and reproducibility.
 
 ## References
