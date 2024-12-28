@@ -80,6 +80,7 @@ data/gender_predictions/nltk_gender_predictions.csv data/gender_predictions/corp
 ############# Create plots ##############
 
 plots : scripts/exploratory_analysis.py data/gender_predictions/all_clean_gender_predictions.csv
+	mkdir -p plots
 	mkdir -p plots/bar_plots
 	mkdir -p plots/box_plots
 	mkdir -p plots/histogram_plots
@@ -101,6 +102,7 @@ data/gender_corpus/clean_name_corpus.csv reports/references.bib
 
 clean :
 	-rm -r data/salary_data/clean_salary_data plots/bar_plots plots/box_plots \
-	plots/histogram_plots plots/line_plots models data/gender_predictions
+	plots/histogram_plots plots/line_plots models data/gender_predictions \
+	plots
 	-rm -f data/gender_corpus/clean_name_corpus.csv \
 	reports/UBC_salary_report.pdf
