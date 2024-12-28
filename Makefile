@@ -39,6 +39,7 @@ scripts/corpus_gender_prediction.py data/salary_data/clean_salary_data/all_clean
 data/gender_corpus/canadian_babyname.csv data/gender_corpus/american_babyname.csv \
 data/gender_corpus/Indian-Female-Names.csv \
 data/gender_corpus/Indian-Male-Names.csv
+	mkdir -p data/gender_predictions
 	python scripts/corpus_gender_prediction.py \
 	--clean_salary_data_file=data/salary_data/clean_salary_data/all_clean_salary_data.csv \
 	--canadian_babyname_data_file=data/gender_corpus/canadian_babyname.csv \
@@ -51,6 +52,7 @@ data/gender_corpus/Indian-Male-Names.csv
 # create gender classification model
 models/gender_classifier.pickle data/gender_predictions/nltk_test_data.pickle data/gender_predictions/nltk_training_data.pickle : \
 scripts/nltk_train_gender_classifier.py data/gender_corpus/clean_name_corpus.csv
+	mkdir -p models
 	python scripts/nltk_train_gender_classifier.py \
 	--name_data_path=data/gender_corpus/clean_name_corpus.csv \
 	--model_output_folder=models \
@@ -92,20 +94,13 @@ reports/qmd_example.pdf: plots reports/UBC_salary_report.qmd \
 data/gender_predictions/corpus_gender_predictions.csv \
 data/gender_predictions/needs_gender_predictions.csv \
 data/salary_data/clean_salary_data/all_clean_salary_data.csv \
-data/gender_corpus/clean_name_corpus.csv
+data/gender_corpus/clean_name_corpus.csv reports/references.bib
 	quarto render reports/UBC_salary_report.qmd --to pdf
 
 ############# Remove intermediary files ##############
 
 clean :
 	-rm -r data/salary_data/clean_salary_data plots/bar_plots plots/box_plots \
-	plots/histogram_plots plots/line_plots
-	-rm -f data/gender_predictions/corpus_gender_predictions.csv \
-	data/gender_predictions/needs_gender_predictions.csv \
-	models/gender_classifier.pickle \
-	data/gender_predictions/nltk_test_data.pickle \
-	data/gender_predictions/nltk_training_data.pickle \
-	data/gender_predictions/nltk_gender_predictions.csv \
-	data/gender_predictions/all_clean_gender_predictions.csv \
-	data/gender_predictions/accuracy.txt \
-	data/gender_corpus/clean_name_corpus.csv
+	plots/histogram_plots plots/line_plots models data/gender_predictions
+	-rm -f data/gender_corpus/clean_name_corpus.csv \
+	reports/UBC_salary_report.pdf
