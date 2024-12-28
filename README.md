@@ -1,10 +1,13 @@
 # Visualizing UBC Salaries Split by Gender
 
-The aim of this project is to create an exploratory analysis of The University of British Columbia (UBC) staff salaries based on guessed gender. A secondary goal is to make sure my analysis is reproducible and auditable.
+The aim of this project is to create an exploratory analysis of The University of British Columbia (UBC) staff salaries based on guessed gender. A secondary goal is to make sure my analysis is reproducible.
 
-The project involves several steps: gathering and cleaning salary data, making staff gender predictions using large babyname datasets, using a machine learning model to guess remaining genders, and visualizing the cleaned data.
+The project involves several steps: gathering and cleaning salary data, making staff gender predictions using large babyname datasets and a machine learning model, and visualizing the cleaned data.
+
+To make sure the analysis is up to date, please follow the instructions in [Running the Analysis](#running-the-analysis). If you don't care if the analysis is up to date, you can read the report from Dec 28th, 2024 [here](https://github.com/jjadeb/UBCSalary/blob/main/reports/UBC_salary_report.pdf).
 
 ## Table Of Contents  
+
 - [Running the Analysis](#running-the-analysis)
 - [Developer Notes](#developer-notes)
 - [Ethics](#ethics)
@@ -42,6 +45,8 @@ To run the analysis in its entirety, run the following command:
 make all
 ```
 
+You can find the created report at the following path: `reports/UBC_salary_report.pdf`.
+
 ### Docker
 
 Docker is a tool that can be used to run my analysis in a reproducible environment. Build a Docker container by following these steps:
@@ -67,6 +72,8 @@ To run the analysis in its entirety, enter the following command in the terminal
 ```bash
 docker-compose run --rm ubcsalaryimg make all
 ```
+
+You can find the created report at the following path: `reports/UBC_salary_report.pdf`.
 
 Some instructions have been borrowed from [this repository](https://github.com/ttimbers/breast_cancer_predictor_py).
 
