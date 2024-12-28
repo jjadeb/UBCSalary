@@ -16,14 +16,14 @@ import pandas as pd
 def change_sex(dataframe, first_name, last_name, update_sex):
     '''Change the sex of a person in the given DataFrame.
 
-    This function modifies the 'Sex_at_birth' column of the DataFrame to change the sex of a person 
+    This function modifies the 'Guessed_Gender' column of the DataFrame to change the sex of a person 
     specified by their first name and last name. If a person with the specified first name and last name 
     is found in the DataFrame, their sex is updated to the specified sex.
 
     Parameters:
     -----------
     dataframe : pandas.DataFrame
-        DataFrame containing person data with columns 'First_Name', 'Last_Name', and 'Sex_at_birth'.
+        DataFrame containing person data with columns 'First_Name', 'Last_Name', and 'Guessed_Gender'.
     first_name : str
         First name of the person whose sex is to be changed.
     last_name : str
@@ -39,19 +39,19 @@ def change_sex(dataframe, first_name, last_name, update_sex):
     Example
     -------
     data:
-    | First_Name | Last_Name | Sex_at_birth |
+    | First_Name | Last_Name | Guessed_Gender |
     |------------|-----------|--------------|
     | John       | Smith     | Male         |
     | Emily      | Johnson   | Female       |
 
     change_gender(data, 'Emily', 'Johnson', 'Male')
     Output:
-    | First_Name | Last_Name | Sex_at_birth |
+    | First_Name | Last_Name | Guessed_Gender |
     |------------|-----------|--------------|
     | John       | Smith     | Male         |
     | Emily      | Johnson   | Male         |
     '''
-    dataframe.loc[(dataframe['First_Name'] == first_name) & (dataframe['Last_Name'] == last_name),'Sex_at_birth'] = update_sex
+    dataframe.loc[(dataframe['First_Name'] == first_name) & (dataframe['Last_Name'] == last_name),'Guessed_Gender'] = update_sex
     return dataframe
 
 
@@ -90,7 +90,7 @@ def main(nltk_gender_predictions_input,corpus_gender_predictions_input,all_gende
     complete_predictions_clean = complete_predictions.drop(columns = ['index'])
 
     # remove gender predictions that have an accuracy of less than 0.8
-    complete_predictions_clean.loc[complete_predictions_clean['Accuracy'] < 0.8,'Sex_at_birth'] = ""
+    complete_predictions_clean.loc[complete_predictions_clean['Confidence_Score'] < 0.8,'Guessed_Gender'] = ""
 
     # change gender predictions that were found to be incorrect
     complete_predictions_clean = change_sex(complete_predictions_clean, "Lakshmi", "Yatham", "Male")
@@ -98,6 +98,7 @@ def main(nltk_gender_predictions_input,corpus_gender_predictions_input,all_gende
     complete_predictions_clean = change_sex(complete_predictions_clean, "Ali", "Lazrak", "Male")
     complete_predictions_clean = change_sex(complete_predictions_clean, "Jan", "Bena", "Female")
     complete_predictions_clean = change_sex(complete_predictions_clean, "Zu-Hua", "Gao", "Male")
+    complete_predictions_clean = change_sex(complete_predictions_clean, "Takamasa", "Momose", "Male")
     
     # export dataset
     complete_predictions_clean.to_csv(all_gender_predictions_output, index = False)

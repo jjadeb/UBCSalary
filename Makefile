@@ -64,7 +64,8 @@ data/gender_predictions/needs_gender_predictions.csv
 	--model_path=models/gender_classifier.pickle \
 	--nltk_test_data=data/gender_predictions/nltk_test_data.pickle \
 	--needs_predictions_file_path=data/gender_predictions/needs_gender_predictions.csv \
-	--nltk_predictions_output_path=data/gender_predictions/nltk_gender_predictions.csv
+	--nltk_predictions_output_path=data/gender_predictions/nltk_gender_predictions.csv \
+	--accuracy_output_path=data/gender_predictions/accuracy.txt
 
 # combine and clean all gender predictions
 data/gender_predictions/all_clean_gender_predictions.csv : scripts/combine_and_clean_predictions.py \
@@ -87,7 +88,11 @@ plots : scripts/exploratory_analysis.py data/gender_predictions/all_clean_gender
 
 ############## Create report ##############
 
-reports/qmd_example.pdf: plots reports/UBC_salary_report.qmd
+reports/qmd_example.pdf: plots reports/UBC_salary_report.qmd \
+data/gender_predictions/corpus_gender_predictions.csv \
+data/gender_predictions/needs_gender_predictions.csv \
+data/salary_data/clean_salary_data/all_clean_salary_data.csv \
+data/gender_corpus/clean_name_corpus.csv
 	quarto render reports/UBC_salary_report.qmd --to pdf
 
 ############# Remove intermediary files ##############
@@ -102,5 +107,5 @@ clean :
 	data/gender_predictions/nltk_training_data.pickle \
 	data/gender_predictions/nltk_gender_predictions.csv \
 	data/gender_predictions/all_clean_gender_predictions.csv \
+	data/gender_predictions/accuracy.txt \
 	data/gender_corpus/clean_name_corpus.csv
-	-rm reports/qmd_example.pdf

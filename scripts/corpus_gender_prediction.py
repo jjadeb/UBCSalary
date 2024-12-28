@@ -221,7 +221,7 @@ def create_and_filter_accuracy_column(dataframe):
     Returns:
     --------
     dataframe: pandas.DataFrame
-        filtered DataFrame with columns 'Sex_at_birth', 'First_Name', and 'Accuracy'
+        filtered DataFrame with columns 'Sex_at_birth', 'First_Name', and 'Confidence_Score'
 
     Example
     -------
@@ -233,16 +233,16 @@ def create_and_filter_accuracy_column(dataframe):
     | Male         | Sam        | 8000  | 15000       |
 
     Returns:
-    | Sex_at_birth | First_Name  | Accuracy |
+    | Sex_at_birth | First_Name  | Confidence_Score |
     |--------------|------------ |----------|
     | Male         | Sam         | 0.53     |
     | Female       | Stephanie   | 1.0      |
     '''
 
     # Create a new column that contains the percentage of counts that are [fem/male] for the given baby name
-    dataframe['Accuracy'] = round(dataframe['Count']/dataframe['Total_Count'],2)
+    dataframe['Confidence_Score'] = round(dataframe['Count']/dataframe['Total_Count'],2)
     # keep row with the sex that has the highest accuracy
-    dataframe = dataframe.sort_values('Accuracy', ascending=False).drop_duplicates('First_Name').reset_index()
+    dataframe = dataframe.sort_values('Confidence_Score', ascending=False).drop_duplicates('First_Name').reset_index()
     # drop useless columns
     dataframe = dataframe.drop(columns = ['Count', 'Total_Count'])
     return dataframe
@@ -262,7 +262,7 @@ def prepare_indian_babyname_data(indian_female_df,indian_male_df):
     Returns:
     --------
     pandas.DataFrame
-        DataFrame containing combined Indian baby names data with columns 'Sex_at_birth', 'First_Name', and 'Accuracy'.
+        DataFrame containing combined Indian baby names data with columns 'Sex_at_birth', 'First_Name', and 'Confidence_Score'.
 
     Example
     -------
@@ -280,7 +280,7 @@ def prepare_indian_babyname_data(indian_female_df,indian_male_df):
     | Arjun     | m      | indian |
 
     Returns:
-    | Sex_at_birth | First_Name | Accuracy |
+    | Sex_at_birth | First_Name | Confidence_Score |
     |--------------|----------- |----------|
     | Female       | Aaradhya   | 0.85     |
     | Female       | Diya       | 0.85     |
@@ -303,7 +303,7 @@ def prepare_indian_babyname_data(indian_female_df,indian_male_df):
     # drop unnecessary columns
     indian_names = indian_names.drop(columns = ['race'])
     # Apply arbitrary accuracy value
-    indian_names['Accuracy'] = 0.85
+    indian_names['Confidence_Score'] = 0.85
     return indian_names
 
 
@@ -345,7 +345,7 @@ def make_gender_predictions_using_corpus(salary_data, name_corpus):
 
     Returns:
     pop_df_predictions:
-    | First_Name | Salary | Sex_at_birth |
+    | First_Name | Salary | Guessed_Gender |
     |------------|--------|--------------|
     | John       | 50000  | Male         |
     | Emily      | 60000  | Female       |
@@ -357,10 +357,12 @@ def make_gender_predictions_using_corpus(salary_data, name_corpus):
     | Alex       | 20000  |
     '''
     pop_df_predicted = pd.merge(salary_data, name_corpus, on = ['First_Name'], how = 'left')
+    pop_df_predicted = pop_df_predicted.rename(columns={'Sex_at_birth': 'Guessed_Gender'})
     # Create dataset for exact name matches
-    pop_df_predictions = pop_df_predicted[pop_df_predicted['Sex_at_birth'].notnull()]
+    pop_df_predictions = pop_df_predicted[pop_df_predicted['Guessed_Gender'].notnull()]
     # Create dataset where there was no exact match and sex still needs to be predicted
-    pop_df_needs_predictions = pop_df_predicted[~pop_df_predicted['Sex_at_birth'].notnull()]
+    pop_df_needs_predictions = pop_df_predicted[~pop_df_predicted['Guessed_Gender'].notnull()]
+
     return pop_df_predictions, pop_df_needs_predictions
      
    
@@ -431,6 +433,7 @@ def main(clean_salary_data_file, canadian_babyname_data_file, american_babyname_
 
     canadian_and_american_babyname_data_with_accuracy = create_and_filter_accuracy_column(canadian_and_american_babyname_data)
 
+    # Indian dataset goes last so when there is a name in both sets, we keep the one with the more accurate confidence score
     name_corpus = pd.concat([canadian_and_american_babyname_data_with_accuracy,indian_babyname_data]).drop_duplicates(subset = 'First_Name')
 
     ############# MAKE PREDICTIONS ##############
