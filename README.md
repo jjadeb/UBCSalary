@@ -5,10 +5,9 @@ The aim of this project is to create an exploratory analysis of The University o
 The project involves several steps: gathering and cleaning salary data, making staff gender predictions using large babyname datasets, using a machine learning model to guess remaining genders, and visualizing the cleaned data.
 
 ## Table Of Contents  
-- [Project History](#project-history)
-- [Ethics](#ethics)
-- [Reprodicible Environment](#reprodicible-environment)
+- [Running the Analysis](#running-the-analysis)
 - [Developer Notes](#developer-notes)
+- [Ethics](#ethics)
 - [Key Skills Learned](#key-skills-learned)
 - [Dependencies](#dependencies)
 - [License](#license)
