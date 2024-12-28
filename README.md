@@ -1,39 +1,21 @@
 # Visualizing UBC Salaries Split by Gender
 
-The aim of this project is to create an exploratory analysis of The University of British Columbia (UBC) faculty salaries based on guessed gender. A secondary goal is to make sure my analysis is reproducible and auditable.
+The aim of this project is to create an exploratory analysis of The University of British Columbia (UBC) staff salaries based on guessed gender. A secondary goal is to make sure my analysis is reproducible.
 
-To prioritize learning, rather than directly requesting salary data from UBC by department and gender, I will rely on the [annual PDF](https://finance.ubc.ca/reporting-planning-analysis/financial-reports) of salary data released by UBC, along with global baby name datasets. To learn more about the sources of the datasets, visit the [data](data) folder.
+The project involves several steps: gathering and cleaning salary data, making staff gender predictions using large babyname datasets and a machine learning model, and visualizing the cleaned data.
 
-The project involves several steps: gathering and cleaning salary data, making staff gender predictions using large babyname datasets, using a machine learning model to guess remaining genders, and visualizing the cleaned data.
+To make sure the analysis is up to date, please follow the instructions in [Running the Analysis](#running-the-analysis). If you don't care if the analysis is up to date, you can read the report from Dec 28th, 2024 [here](https://github.com/jjadeb/UBCSalary/blob/main/reports/UBC_salary_report.pdf).
 
 ## Table Of Contents  
-- [Project History](#project-history)
-- [Ethics](#ethics)
-- [Reprodicible Environment](#reprodicible-environment)
+
+- [Running the Analysis](#running-the-analysis)
 - [Developer Notes](#developer-notes)
+- [Ethics](#ethics)
 - [Key Skills Learned](#key-skills-learned)
 - [Dependencies](#dependencies)
 - [License](#license)
 
-
-## Project History 
-
-The final phase of this project, a report detailing the analysis, is a work in progress. For now, you can see the plots created for the analysis in the [plots folder](plots). 
-
-The most up-to-date analysis code is located in the [scripts](scripts) folder.
-
-Located in the reports directory, there is a [notebook](reports/UBC_salary_analysis.ipynb) that contains a record of the original data wrangling steps of this project. This original analysis contained department and job title data for staff memebrs, and the final exploratory analysis is displayed as a [tableau dashboard](https://public.tableau.com/views/2023UBCSalariesJobTitleDepartmentandGuessedGender/Dashboard1?:language=en-US&:sid=&:display_count=n&:origin=viz_share_link). Due to UBC's copyright, the [department and job title data](https://www.directory.ubc.ca/index.cfm) and the scraping script used to obtain the data are not permitted to be published in this repository. So, the original report is not reproducible. Therefore, for the sake of reproducibility, I removed the use of department and job title data and focused on the relationship between staff salaries and guessed genders of staff members. As mentioned, this new analysis is located in the [scripts](scripts) folder.
-
-## Ethics
-
-In this project first names are used to guess whether someone is "male" or "female". I acknowledge that gender identity is a spectrum and not limited to binary categories. Misgendering, or incorrectly assigning gender to individuals, can have harmful effects and perpetuate stereotypes. While first names can sometimes be an indication of someones gender, first names are not inherintly gendered. 
-
-I encourage anyone who notices a misgendering within this project to raise an issue in the issues tab, and it will be corrected. In addition, I encourage respectful and inclusive language in all discussions related to gender. 
-
-Please refer to the [Code of Conduct](CODE_OF_CONDUCT.md) for further details on the inclusive standards of this project. Your cooperation in fostering an inclusive environment is greatly appreciated.
-
-
-## Reprodicible Environment
+## Running the Analysis
 
 There are two options for running my analysis in a reproducible environment. You can use the `environment.yml` file or use Docker. The `environment.yml` file is a lighter-weight option compared to Docker. 
 
@@ -56,17 +38,20 @@ Run the following command to reset the project to a clean state (i.e., remove al
 ```{bash}
 make clean
 ```
+
 To run the analysis in its entirety, run the following command:
 
 ```{bash}
 make all
 ```
 
+You can find the created report at the following path: `reports/UBC_salary_report.pdf`.
+
 ### Docker
 
 Docker is a tool that can be used to run my analysis in a reproducible environment. Build a Docker container by following these steps:
 
-**Setup**
+#### Setup
 
 1. First, ensure you have [Docker](https://www.docker.com/products/docker-desktop/) installed and running on your machine.
 2. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) this repository, and **navigate to the root of the repository** in a terminal window.
@@ -87,6 +72,8 @@ To run the analysis in its entirety, enter the following command in the terminal
 ```bash
 docker-compose run --rm ubcsalaryimg make all
 ```
+
+You can find the created report at the following path: `reports/UBC_salary_report.pdf`.
 
 Some instructions have been borrowed from [this repository](https://github.com/ttimbers/breast_cancer_predictor_py).
 
@@ -109,9 +96,19 @@ To shut down the container and clean up the resources, type Cntrl + C in the ter
 ```{bash}
 docker-compose rm
 ```
+
 Some instructions have been borrowed from [this repository](https://github.com/ttimbers/breast_cancer_predictor_py)
 
+## Ethics
+
+In this project first names are used to guess whether someone is "male" or "female". I acknowledge that gender identity is a spectrum and not limited to binary categories. Misgendering, or incorrectly assigning gender to individuals, can have harmful effects and perpetuate stereotypes. While first names can sometimes be an indication of someones gender, first names are not inherintly gendered. 
+
+I encourage anyone who notices a misgendering within this project to raise an issue in the issues tab, and it will be corrected. In addition, I encourage respectful and inclusive language in all discussions related to gender.
+
+Please refer to the [Code of Conduct](CODE_OF_CONDUCT.md) for further details on the inclusive standards of this project. Your cooperation in fostering an inclusive environment is greatly appreciated.
+
 ## Key Skills Learned
+
 - Reproducibility in Data Science
 - Data Collecting
 - Data Wrangling
