@@ -126,4 +126,4 @@ The UBC Salary Analysis report contained herein is licensed under the
 re-using/re-mixing please provide attribution and link to this webpage.
 The software code contained within this repository is licensed under the
 MIT license. For any use of the UBC salary data, please see UBC's Terms of Use [here](https://www.ubc.ca/site/legal.html). 
-See [the license file](LICENSE) for more information. 
+See [the license file](LICENSE.md) for more information. 
