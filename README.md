@@ -2,8 +2,6 @@
 
 The aim of this project is to create an exploratory analysis of The University of British Columbia (UBC) faculty salaries based on guessed gender. A secondary goal is to make sure my analysis is reproducible and auditable.
 
-To prioritize learning, rather than directly requesting salary data from UBC by department and gender, I will rely on the [annual PDF](https://finance.ubc.ca/reporting-planning-analysis/financial-reports) of salary data released by UBC, along with global baby name datasets. To learn more about the sources of the datasets, visit the [data](data) folder.
-
 The project involves several steps: gathering and cleaning salary data, making staff gender predictions using large babyname datasets, using a machine learning model to guess remaining genders, and visualizing the cleaned data.
 
 ## Table Of Contents  
