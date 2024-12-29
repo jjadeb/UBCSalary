@@ -2,8 +2,6 @@
 
 The aim of this project is to create an exploratory analysis of The University of British Columbia (UBC) staff salaries based on guessed gender. A secondary goal is to make sure my analysis is reproducible.
 
-The project involves several steps: gathering and cleaning salary data, making staff gender predictions using large babyname datasets and a machine learning model, and visualizing the cleaned data.
-
 To make sure the analysis is up to date, please follow the instructions in [Running the Analysis](#running-the-analysis). If you don't care if the analysis is up to date, you can read the report from Dec 28th, 2024 [here](https://github.com/jjadeb/UBCSalary/blob/main/reports/UBC_salary_report.pdf).
 
 ## Table Of Contents  
