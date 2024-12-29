@@ -2,7 +2,7 @@
 project:
   type: website
   output-dir: docs
-title: "UBC Salaries: Exploratory Analysis of Gender"
+title: "Visualizing University of British Columbia Staff Salaries Split by Gender"
 author: "Jade Bouchard"
 format: 
     html: 
